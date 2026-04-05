@@ -1,0 +1,14 @@
+import { useChat } from "../Chat/chat.context";
+import { MessageItem } from "../Message/message.item";
+
+export const Message = () => {
+  const { messages } = useChat();
+
+  return (
+    <div className="flex-1 overflow-y-auto p-4 space-y-6">
+      {messages.map((message) => (
+        <MessageItem key={message.id} message={message} />
+      ))}
+    </div>
+  );
+};
