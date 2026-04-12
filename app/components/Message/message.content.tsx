@@ -1,23 +1,65 @@
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import { splitThinkingSegments } from "@/lib/message/segment";
 
-export const MessageContent = ({ parts, isUser = false} : {parts: any, isUser?: boolean}) => {
-  // Extract and combine all text parts into a single string for the Markdown parser
+type TextPart = {
+  type: "text";
+  text: string;
+};
+
+type MessageContentProps = {
+  parts: Array<TextPart | { type: string; [key: string]: unknown }>;
+  isUser?: boolean;
+};
+
+export const MessageContent = ({ parts, isUser = false }: MessageContentProps) => {
   const textContent = parts
-    .filter((p) => p.type === "text")
-    .map((p) => p.text)
+    .filter((part): part is TextPart => part.type === "text")
+    .map((part) => part.text)
     .join("\n");
 
+  const segments = splitThinkingSegments(textContent);
+
   return (
-    // The 'prose' class handles the markdown styling automatically.
-    // We adjust the prose colors based on whether it's the user (light text) or assistant (dark text).
-    <div className={`prose prose-sm max-w-none break-words ${
-      isUser 
-        ? "prose-invert prose-p:text-white prose-headings:text-white prose-strong:text-white prose-a:text-blue-200" 
-        : "dark:prose-invert"
-    }`}>
-      <ReactMarkdown>
-        {textContent}
-      </ReactMarkdown>
+    <div className={`md-content ${isUser ? "md-content-user" : "md-content-assistant"}`}>
+      {segments.map((segment, index) => {
+        if (!segment.content.trim()) {
+          return null;
+        }
+
+        if (segment.type === "thinking") {
+          return (
+            <details key={`thinking-${index}`} className="md-thinking">
+              <summary>Thinking</summary>
+              <div className="md-thinking-body">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  rehypePlugins={[[rehypeHighlight, { detect: true, ignoreMissing: true }]]}
+                  components={{
+                    a: ({ ...props }) => <a {...props} target="_blank" rel="noreferrer noopener" />,
+                  }}
+                >
+                  {segment.content}
+                </ReactMarkdown>
+              </div>
+            </details>
+          );
+        }
+
+        return (
+          <ReactMarkdown
+            key={`md-${index}`}
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[[rehypeHighlight, { detect: true, ignoreMissing: true }]]}
+            components={{
+              a: ({ ...props }) => <a {...props} target="_blank" rel="noreferrer noopener" />,
+            }}
+          >
+            {segment.content}
+          </ReactMarkdown>
+        );
+      })}
     </div>
   );
-}
+};

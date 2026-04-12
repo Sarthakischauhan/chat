@@ -6,7 +6,8 @@ import { createContext, ReactNode, useContext, useReducer } from "react";
 export enum ProviderId{
     OPENAI = "openai", 
     GOOGLE = "google", 
-    CLAUDE = "anthropic"
+    CLAUDE = "anthropic",
+    OLLAMA = "ollama"
 }
 
 export type ChatStatus = "submitted" | "streaming" | "ready" | "error";
@@ -40,7 +41,7 @@ type ChatContextType = {
 
 const intialState = {
   input: "",
-  provider: ProviderId.OPENAI,
+  provider: ProviderId.OLLAMA,
 };
 
 const reducer = (state: ChatState, action: ChatAction) => {

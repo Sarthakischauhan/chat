@@ -1,12 +1,19 @@
 import { streamText, convertToModelMessages, type UIMessage } from 'ai';
 import { registry } from '@/lib/ai/registry';
 
-type ProviderId = 'openai' | 'anthropic' | 'google';
+type ProviderId = 'openai' | 'anthropic' | 'google' | 'ollama';
+const Providers: ProviderId[] = [
+  "anthropic",
+  "ollama",
+  "openai",
+  "google"
+]
 
 const DEFAULT_MODELS: Record<ProviderId, string> = {
   openai: 'gpt-4.1',
   anthropic: 'claude-3-7-sonnet-20250219',
   google: 'gemini-2.5-flash',
+  ollama: "smallthinker:latest",
 };
 
 export async function POST(req: Request) {
@@ -15,16 +22,18 @@ export async function POST(req: Request) {
     provider = 'openai',
     model,
   }: { messages: UIMessage[]; provider?: ProviderId; model?: string } =
-    await req.json();
+  await req.json();
+  if (!Providers.includes(provider)) return null
 
-  const providerId: ProviderId =
-    provider === 'anthropic' || provider === 'google' ? provider : 'openai';
-  console.log(providerId)
-  const modelId = model ?? DEFAULT_MODELS[providerId];
-
+  const modelId = model ?? DEFAULT_MODELS[provider];
   const result = streamText({
-    model: registry.languageModel(`${providerId}:${modelId}`),
+    model: registry.languageModel(`${provider}:${modelId}`),
     messages: await convertToModelMessages(messages),
+    providerOptions: {
+      ollama: {
+        think: false
+      }
+    }
   });
 
   return result.toUIMessageStreamResponse();
