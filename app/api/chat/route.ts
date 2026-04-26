@@ -23,7 +23,9 @@ export async function POST(req: Request) {
     model,
   }: { messages: UIMessage[]; provider?: ProviderId; model?: string } =
   await req.json();
-  if (!Providers.includes(provider)) return null
+  if (!Providers.includes(provider)) {
+    return new Response('Unsupported provider', { status: 400 });
+  }
 
   const modelId = model ?? DEFAULT_MODELS[provider];
   const result = streamText({

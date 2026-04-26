@@ -1,43 +1,43 @@
 
 @layer components {
   .md-content {
-    @apply text-md leading-7 break-words;
+    @reference text-base leading-7 break-words;
   }
 
   .md-content > * + * {
-    @apply mt-3;
+    @reference mt-3;
   }
 
   .md-content p {
-    @apply m-0;
+    @reference m-0;
   }
 
   .md-content h1,
   .md-content h2,
   .md-content h3,
   .md-content h4 {
-    @apply font-semibold leading-6;
+    @reference font-semibold leading-6;
   }
 
   .md-content ul,
   .md-content ol {
-    @apply pl-6 my-2;
+    @reference pl-6 my-2;
   }
 
   .md-content ul {
-    @apply list-disc;
+    @reference list-disc;
   }
 
   .md-content ol {
-    @apply list-decimal;
+    @reference list-decimal;
   }
 
   .md-content li {
-    @apply pl-1;
+    @reference pl-1;
   }
 
   .md-content li + li {
-    @apply mt-1;
+    @reference mt-1;
   }
 
   .md-content li::marker {
@@ -45,41 +45,41 @@
   }
 
   .md-content a {
-    @apply underline underline-offset-2;
+    @reference underline underline-offset-2;
   }
 
   .md-content hr {
-    @apply my-4 border-border;
+    @reference my-4 border-border;
   }
 
   .md-content blockquote {
-    @apply border-l-2 border-border pl-3 italic;
+    @reference border-l-2 border-border pl-3 italic;
   }
 
   .md-content pre {
-    @apply overflow-x-auto rounded-xl px-4 py-3;
+    @reference overflow-x-auto rounded-xl px-4 py-3;
     background-color: oklch(0.16 0 0);
   }
 
   .md-content pre code {
-    @apply bg-transparent text-[13px] leading-6;
+    @reference bg-transparent text-[13px] leading-6;
   }
 
   .md-content :not(pre) > code {
-    @apply rounded px-1.5 py-0.5 font-mono text-[0.85em];
+    @reference rounded px-1.5 py-0.5 font-mono text-[0.85em];
     background-color: color-mix(in oklab, var(--muted) 80%, transparent);
   }
 
   .md-content table {
-    @apply w-full border-collapse text-left text-xs;
+    @reference w-full border-collapse text-left text-xs;
   }
 
   .md-thinking {
-    @apply my-3 rounded-xl border border-border bg-muted/40;
+    @reference my-3 rounded-xl border border-border bg-muted/40;
   }
 
   .md-thinking > summary {
-    @apply cursor-pointer px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground;
+    @reference cursor-pointer px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground;
     list-style: none;
   }
 
@@ -88,28 +88,28 @@
   }
 
   .md-thinking[open] > summary {
-    @apply border-b border-border;
+    @reference border-b border-border;
   }
 
   .md-thinking-body {
-    @apply px-3 py-2;
+    @reference px-3 py-2;
   }
 
   .md-content th,
   .md-content td {
-    @apply border border-border px-2 py-1.5 align-top;
+    @reference border border-border px-2 py-1.5 align-top;
   }
 
   .md-content th {
-    @apply font-semibold;
+    @reference font-semibold;
   }
 
   .md-content-assistant {
-    @apply text-zinc-900 dark:text-zinc-100;
+    @reference text-zinc-900 dark:text-zinc-100;
   }
 
   .md-content-user {
-    @apply text-zinc-900 dark:text-zinc-100;
+    @reference text-zinc-900 dark:text-zinc-100;
   }
 
   .md-content pre code.hljs {
