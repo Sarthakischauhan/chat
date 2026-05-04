@@ -3,9 +3,8 @@ import { useChat } from "./chat.context";
 import { Textarea } from "@/components/ui/textarea";
 
 export const ChatInput = () => {
-  const { state, dispatch, status, submitInput} = useChat();
-  const { input } = state;
-  const isSending = status === "submitted" || status === "streaming";
+  const { state, dispatch, submitInput } = useChat();
+  const { input, disabled } = state;
 
   return (
     <div className="w-full">
@@ -17,12 +16,12 @@ export const ChatInput = () => {
             dispatch({ type: "setInput", data: { input: e.target.value } })
           }
           placeholder="Type a message"
-          disabled={isSending}
+          disabled={disabled}
           onKeyDown={(e) => {
             if (e.key !== "Enter" || e.shiftKey) return;
             if (e.nativeEvent.isComposing) return; // IME safety
             e.preventDefault();
-            if (!isSending && input.trim()) {
+            if (!disabled && input.trim()) {
               void submitInput();
             }
           }}

@@ -1,7 +1,15 @@
 "use client";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { useChat as useAiChat } from "@ai-sdk/react";
-import { createContext, ReactNode, useContext, useReducer } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 
 export enum ProviderId{
     OPENAI = "openai", 
@@ -26,25 +34,35 @@ type ChatAction = {
 }
 
 type ChatState = {
-    input: string;
-    provider: ProviderId;
-}
+  input: string;
+  provider: ProviderId;
+  disabled: boolean;
+  sendDisabled: boolean;
+};
 
 type ChatContextType = {
   state: ChatState;
   dispatch: React.Dispatch<ChatAction>;
   messages: UIMessage[];
   status: ChatStatus;
+  activeThreadId: string | null;
+  threads: { id: string; title: string }[];
+  isLoadingThread: boolean;
   sendMessage: SendMessage;
   submitInput: () => Promise<void>;
+  selectThread: (threadId: string) => Promise<void>;
+  createThread: () => Promise<void>;
+  deleteThread: (threadId: string) => Promise<void>;
 };
 
-const intialState = {
+type ChatReducerState = Pick<ChatState, "input" | "provider">;
+
+const intialState: ChatReducerState = {
   input: "",
   provider: ProviderId.OLLAMA,
 };
 
-const reducer = (state: ChatState, action: ChatAction) => {
+const reducer = (state: ChatReducerState, action: ChatAction) => {
   switch (action.type) {
     case "setInput":
       return { ...state, input: action.data?.input };
@@ -62,19 +80,197 @@ type ChatContextProviderProps = {
 };
 
 export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
-  const [state, dispatch] = useReducer(reducer, intialState);
-  const { messages, sendMessage, status } = useAiChat({
-    transport: new DefaultChatTransport({ api: "/api/chat" }),
+  const [chatState, dispatch] = useReducer(reducer, intialState);
+  const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
+  const [threads, setThreads] = useState<{ id: string; title: string }[]>([]);
+  const [isLoadingThread, setIsLoadingThread] = useState(true);
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        prepareSendMessagesRequest({ id, messages, body }) {
+          return {
+            body: {
+              id,
+              message: messages[messages.length - 1],
+              provider: body?.provider,
+            },
+          };
+        },
+      }),
+    [],
+  );
+  const { messages, sendMessage, setMessages, status } = useAiChat({
+    id: activeThreadId ?? "thread-pending",
+    transport,
   });
+  const isSending = status === "submitted" || status === "streaming";
+  const state = useMemo<ChatState>(() => {
+    const disabled = isSending || isLoadingThread || !activeThreadId;
 
-  const submitInput = async () => {
-    const text = state.input.trim();
-    if (!text) {
+    return {
+      ...chatState,
+      disabled,
+      sendDisabled: disabled || !chatState.input.trim(),
+    };
+  }, [activeThreadId, chatState, isLoadingThread, isSending]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const bootstrap = async () => {
+      const response = await fetch("/api/threads", {
+        cache: "no-store",
+      });
+      const data = (await response.json()) as {
+        threads: { id: string; title: string }[];
+      };
+
+      if (cancelled) {
+        return;
+      }
+
+      if (data.threads.length > 0) {
+        setThreads(data.threads);
+        setActiveThreadId(data.threads[0].id);
+        return;
+      }
+
+      const createResponse = await fetch("/api/threads", {
+        method: "POST",
+      });
+      const createData = (await createResponse.json()) as {
+        thread: { id: string; title: string };
+      };
+
+      if (cancelled) {
+        return;
+      }
+
+      setThreads([createData.thread]);
+      setActiveThreadId(createData.thread.id);
+    };
+
+    bootstrap().catch(() => {
+      if (!cancelled) {
+        setIsLoadingThread(false);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadMessages = async () => {
+      if (!activeThreadId) {
+        setMessages([]);
+        setIsLoadingThread(false);
+        return;
+      }
+
+      setIsLoadingThread(true);
+      const response = await fetch(`/api/threads/${activeThreadId}/messages`, {
+        cache: "no-store",
+      });
+      const data = (await response.json()) as { messages: UIMessage[] };
+
+      if (cancelled) {
+        return;
+      }
+
+      setMessages(data.messages);
+      setIsLoadingThread(false);
+    };
+
+    loadMessages().catch(() => {
+      if (!cancelled) {
+        setMessages([]);
+        setIsLoadingThread(false);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeThreadId, setMessages]);
+
+  const selectThread = async (threadId: string) => {
+    if (threadId === activeThreadId) {
       return;
     }
 
-    const provider = state.provider;
+    setActiveThreadId(threadId);
+  };
+
+  const createThread = async () => {
+    const response = await fetch("/api/threads", {
+      method: "POST",
+    });
+    const data = (await response.json()) as {
+      thread: { id: string; title: string };
+    };
+
+    setThreads((current) => [data.thread, ...current]);
+    setActiveThreadId(data.thread.id);
+  };
+
+  const deleteThread = async (threadId: string) => {
+    const response = await fetch(`/api/threads/${threadId}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete thread");
+    }
+
+    const remainingThreads = threads.filter((thread) => thread.id !== threadId);
+    setThreads(remainingThreads);
+
+    if (activeThreadId !== threadId) {
+      return;
+    }
+
+    const nextActiveThreadId = remainingThreads[0]?.id ?? null;
+    setActiveThreadId(nextActiveThreadId);
+
+    if (nextActiveThreadId) {
+      return;
+    }
+
+    const threadResponse = await fetch("/api/threads", {
+      method: "POST",
+    });
+    const data = (await threadResponse.json()) as {
+      thread: { id: string; title: string };
+    };
+
+    setThreads([data.thread]);
+    setActiveThreadId(data.thread.id);
+  };
+
+  const submitInput = async () => {
+    const text = chatState.input.trim();
+    if (!text || !activeThreadId) {
+      return;
+    }
+
+    const provider = chatState.provider;
+    const nextTitle = text.slice(0, 60);
     dispatch({ type: "setInput", data: { input: "" } });
+    setThreads((current) => {
+      const next = current.map((thread) =>
+        thread.id === activeThreadId && thread.title === "New chat"
+          ? { ...thread, title: nextTitle || thread.title }
+          : thread,
+      );
+      const selected = next.find((thread) => thread.id === activeThreadId);
+      const remaining = next.filter((thread) => thread.id !== activeThreadId);
+      return selected ? [selected, ...remaining] : next;
+    });
 
     try {
       await sendMessage({ text }, { body: { provider } });
@@ -89,8 +285,14 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
     dispatch,
     messages,
     status,
+    activeThreadId,
+    threads,
+    isLoadingThread,
     sendMessage,
     submitInput,
+    selectThread,
+    createThread,
+    deleteThread,
   };
 
   return (

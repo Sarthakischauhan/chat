@@ -2,7 +2,11 @@ import { useChat } from "../Chat/chat.context";
 import { MessageItem } from "../Message/message.item";
 
 export const Message = () => {
-  const { messages } = useChat();
+  const { messages, isLoadingThread } = useChat();
+
+  if (isLoadingThread) {
+    return <div className="flex-1 overflow-y-auto p-4 text-sm text-zinc-500">Loading chat...</div>;
+  }
 
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-6">

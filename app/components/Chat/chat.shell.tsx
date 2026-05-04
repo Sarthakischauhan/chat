@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { MessageSquare, Plus, Settings } from 'lucide-react';
 
 import {
@@ -19,20 +19,16 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-
-const chats = ['Model council', 'Planning notes', 'Code review'];
-
-type ChatSidebarProps = {
-  activeChat: string;
-  onSelectChat: (chat: string) => void;
-};
+import { useChat } from './chat.context';
 
 type ChatShellProps = {
   children: ReactNode;
   composer: ReactNode;
 };
 
-function ChatSidebar({ activeChat, onSelectChat }: ChatSidebarProps) {
+function ChatSidebar() {
+  const { activeThreadId, createThread, selectThread, threads } = useChat();
+
   return (
     <Sidebar
       collapsible="icon"
@@ -45,7 +41,7 @@ function ChatSidebar({ activeChat, onSelectChat }: ChatSidebarProps) {
           </div>
           <SidebarMenu className="w-full">
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip="New chat">
+              <SidebarMenuButton tooltip="New chat" onClick={() => void createThread()}>
                 <Plus />
                 <span>New chat</span>
               </SidebarMenuButton>
@@ -58,11 +54,15 @@ function ChatSidebar({ activeChat, onSelectChat }: ChatSidebarProps) {
           <SidebarGroupLabel>Chats</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {chats.map((chat) => (
-                <SidebarMenuItem key={chat}>
-                  <SidebarMenuButton isActive={chat === activeChat} onClick={() => onSelectChat(chat)} tooltip={chat}>
+              {threads.map((thread) => (
+                <SidebarMenuItem key={thread.id}>
+                  <SidebarMenuButton
+                    isActive={thread.id === activeThreadId}
+                    onClick={() => void selectThread(thread.id)}
+                    tooltip={thread.title}
+                  >
                     <MessageSquare />
-                    <span>{chat}</span>
+                    <span>{thread.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -86,11 +86,12 @@ function ChatSidebar({ activeChat, onSelectChat }: ChatSidebarProps) {
 }
 
 export function ChatShell({ children, composer }: ChatShellProps) {
-  const [activeChat, setActiveChat] = useState(chats[0]);
+  const { activeThreadId, threads } = useChat();
+  const activeChat = threads.find((thread) => thread.id === activeThreadId)?.title ?? 'New chat';
 
   return (
     <SidebarProvider>
-      <ChatSidebar activeChat={activeChat} onSelectChat={setActiveChat} />
+      <ChatSidebar />
       <SidebarInset className="min-h-screen">
         <header className="sticky top-0 z-10 flex h-14 items-center gap-2 bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <SidebarTrigger className="md:hidden" />
