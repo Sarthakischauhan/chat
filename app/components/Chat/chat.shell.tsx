@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { MessageSquare, Plus, Settings } from 'lucide-react';
+import { Plus, Settings } from 'lucide-react';
 
 import {
   Sidebar,
@@ -19,6 +19,7 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
+import { SidebarThread } from '../Sidebar/sidebar.thread';
 import { useChat } from './chat.context';
 
 type ChatShellProps = {
@@ -27,7 +28,7 @@ type ChatShellProps = {
 };
 
 function ChatSidebar() {
-  const { activeThreadId, createThread, selectThread, threads } = useChat();
+  const {  createThread } = useChat();
 
   return (
     <Sidebar
@@ -53,20 +54,7 @@ function ChatSidebar() {
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <SidebarGroupLabel>Chats</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {threads.map((thread) => (
-                <SidebarMenuItem key={thread.id}>
-                  <SidebarMenuButton
-                    isActive={thread.id === activeThreadId}
-                    onClick={() => void selectThread(thread.id)}
-                    tooltip={thread.title}
-                  >
-                    <MessageSquare />
-                    <span>{thread.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
+            <SidebarThread />
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

@@ -60,6 +60,17 @@ export const listThreads = async () => {
   return threads.map(toThread);
 };
 
+export const archiveThread = async (threadId: string) => {
+  await prisma.thread.update({
+    where: {
+      id: threadId,
+    },
+    data: {
+      archivedAt: new Date(),
+    },
+  });
+};
+
 export const getThreadMessages = async (threadId: string): Promise<unknown>=> {
   const messages = await prisma.message.findMany({
     where: {
