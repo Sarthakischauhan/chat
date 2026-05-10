@@ -24,25 +24,36 @@ export const MessageContent = ({ parts, isUser = false }: MessageContentProps) =
   return (
     <div className={`md-content ${isUser ? "md-content-user" : "md-content-assistant"}`}>
       {segments.map((segment, index) => {
-        if (!segment.content.trim()) {
+        if (!segment.content.trim() && segment.type !== "thinking") {
           return null;
         }
 
-        if (segment.type === "thinking") {
+        if (segment.type === "thinking" && !isUser) {
+          const isComplete = segment.isComplete ?? true;
+
           return (
-            <details key={`thinking-${index}`} className="md-thinking">
-              <summary>Thinking</summary>
-              <div className="md-thinking-body">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  rehypePlugins={[[rehypeHighlight, { detect: true, ignoreMissing: true }]]}
-                  components={{
-                    a: ({ ...props }) => <a {...props} target="_blank" rel="noreferrer noopener" />,
-                  }}
-                >
-                  {segment.content}
-                </ReactMarkdown>
-              </div>
+            <details
+              key={`thinking-${index}`}
+              className={`md-thinking ${isComplete ? "md-thinking-complete" : "md-thinking-pending"}`}
+              open={!isComplete}
+            >
+              <summary>
+                <span className="md-thinking-label">{isComplete ? "Thought" : "Thinking"}</span>
+                <span className={`md-thinking-indicator ${isComplete ? "" : "md-thinking-indicator-pending"}`} />
+              </summary>
+              {!!segment.content.trim() && (
+                <div className="md-thinking-body">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[[rehypeHighlight, { detect: true, ignoreMissing: true }]]}
+                    components={{
+                      a: ({ ...props }) => <a {...props} target="_blank" rel="noreferrer noopener" />,
+                    }}
+                  >
+                    {segment.content}
+                  </ReactMarkdown>
+                </div>
+              )}
             </details>
           );
         }

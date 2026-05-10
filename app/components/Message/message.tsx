@@ -1,15 +1,18 @@
+"use client";
+
+import { useRef, useEffect } from "react";
 import { useChat } from "../Chat/chat.context";
 import { MessageItem } from "../Message/message.item";
 
 export const Message = () => {
-  const { messages, isLoadingThread } = useChat();
+  const { messages, isLoadingThread, status } = useChat();
 
   if (isLoadingThread) {
-    return <div className="flex-1 overflow-y-auto p-4 text-sm text-zinc-500">Loading chat...</div>;
+    return <div className="min-h-0 flex-1 overflow-y-auto p-4 text-sm text-zinc-500">Loading chat...</div>;
   }
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-6">
+    <div className="message-container flex-1 p-4 space-y-6">
       {messages.map((message) => (
         <MessageItem key={message.id} message={message} />
       ))}

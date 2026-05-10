@@ -76,11 +76,11 @@
   }
 
   .md-thinking {
-    @apply my-3 rounded-xl border border-border bg-muted/40;
+    @apply my-3 overflow-hidden rounded-2xl border border-border/70 bg-muted/35;
   }
 
   .md-thinking > summary {
-    @apply cursor-pointer px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground;
+    @apply flex items-center justify-between gap-3 px-4 py-3 text-sm font-medium text-muted-foreground;
     list-style: none;
   }
 
@@ -88,12 +88,36 @@
     display: none;
   }
 
+  .md-thinking-label {
+    @apply tracking-tight;
+  }
+
+  .md-thinking-indicator {
+    @apply h-2 w-2 shrink-0 rounded-full bg-border;
+  }
+
+  .md-thinking-indicator-pending {
+    @apply animate-pulse bg-foreground/40;
+  }
+
+  .md-thinking-complete > summary {
+    @apply cursor-pointer;
+  }
+
+  .md-thinking-pending > summary {
+    @apply cursor-default;
+  }
+
   .md-thinking[open] > summary {
     @apply border-b border-border;
   }
 
+  .md-thinking-pending[open] > summary {
+    @apply border-b border-border/70 bg-background/40;
+  }
+
   .md-thinking-body {
-    @apply px-3 py-2;
+    @apply px-4 py-3 text-sm leading-6;
   }
 
   .md-content th,

@@ -1,36 +1,55 @@
 
-export const THINKING_TAG_PATTERN = /<thinking>([\s\S]*?)<\/thinking>/gi;
-
 export type ContentSegment = {
   type: "markdown" | "thinking";
   content: string;
+  isComplete?: boolean;
 };
 
+/**
+ * Split thinking segments of the AI message. 
+ * @param content 
+ * @returns 
+ */
 export const splitThinkingSegments = (content: string): ContentSegment[] => {
   const segments: ContentSegment[] = [];
-  let currentIndex = 0;
+  let cursor = 0;
 
-  for (const match of content.matchAll(THINKING_TAG_PATTERN)) {
-    const fullMatch = match[0];
-    const thinkingContent = match[1] ?? "";
-    const startIndex = match.index ?? 0;
+  while (cursor < content.length) {
+    const openingIndex = content.indexOf("<thinking>", cursor);
 
-    if (startIndex > currentIndex) {
+    if (openingIndex === -1) {
       segments.push({
         type: "markdown",
-        content: content.slice(currentIndex, startIndex),
+        content: content.slice(cursor),
+      });
+      break;
+    }
+
+    if (openingIndex > cursor) {
+      segments.push({
+        type: "markdown",
+        content: content.slice(cursor, openingIndex),
       });
     }
 
-    segments.push({ type: "thinking", content: thinkingContent.trim() });
-    currentIndex = startIndex + fullMatch.length;
-  }
+    const thinkingStart = openingIndex + "<thinking>".length;
+    const closingIndex = content.indexOf("</thinking>", thinkingStart);
 
-  if (currentIndex < content.length) {
+    if (closingIndex === -1) {
+      segments.push({
+        type: "thinking",
+        content: content.slice(thinkingStart).trim(),
+        isComplete: false,
+      });
+      break;
+    }
+
     segments.push({
-      type: "markdown",
-      content: content.slice(currentIndex),
+      type: "thinking",
+      content: content.slice(thinkingStart, closingIndex).trim(),
+      isComplete: true,
     });
+    cursor = closingIndex + "</thinking>".length;
   }
 
   if (!segments.length) {
