@@ -3,6 +3,7 @@ import type { PluggableList } from "unified";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import { splitThinkingSegments } from "@/lib/message/segment";
+import { parseUserReferenceMessage } from "@/lib/message/user";
 
 type TextPart = {
   type: "text";
@@ -14,40 +15,12 @@ type MessageContentProps = {
   isUser?: boolean;
 };
 
-type UserReferenceMessage = {
-  references: string[];
-  message: string;
-};
-
-const REFERENCE_PREFIX = "Use the following selected references as context:\n\n";
-const USER_MESSAGE_MARKER = "\n\nUser message:\n";
-const REFERENCE_PATTERN = /<reference \d+>\n([\s\S]*?)\n<\/reference \d+>/g;
 const markdownPlugins: { remark: PluggableList; rehype: PluggableList } = {
   remark: [remarkGfm],
   rehype: [[rehypeHighlight, { detect: true, ignoreMissing: true }]],
 };
 const markdownComponents = {
   a: ({ ...props }) => <a {...props} target="_blank" rel="noreferrer noopener" />,
-};
-
-const parseUserReferenceMessage = (content: string): UserReferenceMessage | null => {
-  if (!content.startsWith(REFERENCE_PREFIX)) {
-    return null;
-  }
-
-  const markerIndex = content.indexOf(USER_MESSAGE_MARKER);
-
-  if (markerIndex === -1) {
-    return null;
-  }
-
-  const references = [...content.slice(REFERENCE_PREFIX.length, markerIndex).matchAll(REFERENCE_PATTERN)]
-    .map((match) => match[1].trim())
-    .filter(Boolean);
-
-  return references.length
-    ? { references, message: content.slice(markerIndex + USER_MESSAGE_MARKER.length) }
-    : null;
 };
 
 const MarkdownContent = ({ children }: { children: string }) => {
