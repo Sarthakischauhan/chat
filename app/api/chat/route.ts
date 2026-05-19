@@ -2,6 +2,7 @@ import {
   convertToModelMessages,
   createIdGenerator,
   streamText,
+  consumeStream,
   type UIMessage,
 } from "ai";
 import { registry } from "@/lib/ai/registry";
@@ -72,5 +73,6 @@ export async function POST(req: Request) {
         model: modelId,
       });
     },
+    consumeSseStream: consumeStream,
   });
 }
