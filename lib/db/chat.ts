@@ -163,3 +163,69 @@ export const ensureThread = async (threadId: string) => {
 
   return toThread(thread);
 };
+
+const updateMessageText = (message: UIMessage, text: string): UIMessage => ({
+  ...message,
+  parts: message.parts.map((part) =>
+    part.type === "text" ? { ...part, text } : part,
+  ),
+});
+
+export const editThreadMessage = async ({
+  threadId,
+  messageId,
+  text,
+}: {
+  threadId: string;
+  messageId: string;
+  text: string;
+}) => {
+  const messages = await getThreadMessages(threadId);
+  const messageIndex = messages.findIndex((message) => message.id === messageId);
+  const message = messages[messageIndex];
+
+  if (!message || message.role !== "user") {
+    throw new Error("Message not found");
+  }
+
+  // rebuild the message array with the updated message from the user.
+  const updatedMessages = messages
+    .slice(0, messageIndex + 1)
+    .map((currentMessage) =>
+      currentMessage.id === messageId
+        ? updateMessageText(currentMessage, text)
+        : currentMessage,
+    );
+
+  // call prisma to patch.
+  await prisma.$transaction(async (tx) => {
+    await tx.message.update({
+      where: {
+        id: messageId,
+      },
+      data: {
+        payload: toJsonValue(updateMessageText(message, text)),
+      },
+    });
+
+    await tx.message.deleteMany({
+      where: {
+        threadId,
+        sequence: {
+          gt: message?.sequence,
+        },
+      },
+    });
+
+    await tx.thread.update({
+      where: {
+        id: threadId,
+      },
+      data: {
+        title: deriveThreadTitle(updatedMessages),
+      },
+    });
+  });
+
+  return updatedMessages;
+};

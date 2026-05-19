@@ -12,6 +12,7 @@ import {
   useState,
 } from "react";
 import { ChatTooltip } from "./chat.tooltip";
+import { getUserDisplayText } from "@/lib/message/user";
 
 export enum ProviderId{
     OPENAI = "openai", 
@@ -66,6 +67,8 @@ type ChatContextType = {
   isLoadingThread: boolean;
   sendMessage: SendMessage;
   submitInput: () => Promise<void>;
+  editAndResendMessage: (messageId: string, text: string) => Promise<void>;
+  stopResponse: () => void;
   selectThread: (threadId: string) => Promise<void>;
   createThread: () => Promise<void>;
   deleteThread: (threadId: string) => Promise<void>;
@@ -149,7 +152,7 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
       }),
     [],
   );
-  const { messages, sendMessage, setMessages, status } = useAiChat({
+  const { messages, sendMessage, setMessages, status, stop } = useAiChat({
     id: activeThreadId ?? "thread-pending",
     transport,
   });
@@ -342,6 +345,76 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
     }
   };
 
+  const editAndResendMessage = async (messageId: string, text: string) => {
+    const trimmedText = text.trim();
+    if (!trimmedText || !activeThreadId || isSending) {
+      return;
+    }
+
+    const messageIndex = messages.findIndex((message) => message.id === messageId);
+    const message = messages[messageIndex];
+
+    if (!message || message.role !== "user") {
+      return;
+    }
+
+    const provider = chatState.provider;
+    const previousMessages = messages;
+    let editedMessages: UIMessage[] | null = null;
+
+    setThreads((current) => {
+      const editedMessages = previousMessages
+        .slice(0, messageIndex + 1)
+        .map((currentMessage) =>
+          currentMessage.id === messageId
+            ? {
+                ...currentMessage,
+                parts: [{ type: "text" as const, text: trimmedText }],
+              }
+            : currentMessage,
+        );
+      const firstUserMessage = editedMessages.find((currentMessage) => currentMessage.role === "user");
+      const firstUserTitle = firstUserMessage
+        ? getUserDisplayText(firstUserMessage).trim().slice(0, 60)
+        : "";
+
+      return current.map((thread) =>
+        thread.id === activeThreadId && firstUserTitle
+          ? { ...thread, title: firstUserTitle }
+          : thread,
+      );
+    });
+
+    try {
+      const response = await fetch(`/api/threads/${activeThreadId}/messages/${messageId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: trimmedText }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to edit message");
+      }
+
+      const data = (await response.json()) as { messages: UIMessage[] };
+      editedMessages = data.messages;
+      setMessages(data.messages);
+
+      await sendMessage({ text: trimmedText }, { body: { provider } });
+    } catch (error) {
+      setMessages(editedMessages ?? previousMessages);
+      throw error;
+    }
+  };
+
+  const stopResponse = () => {
+    if (isSending) {
+      stop();
+    }
+  };
+
   const defaultValue: ChatContextType = {
     state,
     dispatch,
@@ -352,6 +425,8 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
     isLoadingThread,
     sendMessage,
     submitInput,
+    editAndResendMessage,
+    stopResponse,
     selectThread,
     createThread,
     deleteThread,

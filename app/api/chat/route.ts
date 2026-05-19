@@ -44,8 +44,7 @@ export async function POST(req: Request) {
   }
 
   await ensureThread(id);
-  const previousMessages = await getThreadMessages(id);
-  const messages = [...previousMessages, message];
+  const messages = [...(await getThreadMessages(id)), message];
   const modelId = model ?? DEFAULT_MODELS[provider];
   const result = streamText({
     model: registry.languageModel(`${provider}:${modelId}`),
@@ -65,11 +64,7 @@ export async function POST(req: Request) {
       prefix: "msg",
       size: 16,
     }),
-    onFinish: async ({ messages: responseMessages, isAborted }) => {
-      if (isAborted) {
-        return;
-      }
-
+    onFinish: async ({ messages: responseMessages }) => {
       await saveThreadMessages({
         threadId: id,
         messages: responseMessages,

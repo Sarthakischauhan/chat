@@ -1,5 +1,3 @@
-'use client';
-
 import { ChatContextProvider } from './components/Chat/chat.context';
 import { ChatShell } from './components/Chat/chat.shell';
 import { Chat } from './components/Chat/chat';
