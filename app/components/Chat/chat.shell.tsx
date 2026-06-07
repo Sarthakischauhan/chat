@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import { ReactNode, useRef, useEffect } from 'react';
+import { ReactNode, useRef, useEffect } from "react";
 
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from '@/components/ui/sidebar';
-import { ChatSidebar } from './chat.sidebar';
-import { useChat } from './chat.context';
+} from "@/components/ui/sidebar";
+import { ChatSidebar } from "./chat.sidebar";
+import { useChat } from "./chat.context";
+import { ChatQuestionSelector } from "./chat.questionSelector";
 
 type ChatShellProps = {
   children: ReactNode;
@@ -17,7 +18,8 @@ type ChatShellProps = {
 
 export function ChatShell({ children, composer }: ChatShellProps) {
   const { activeThreadId, threads, messages, status } = useChat();
-  const activeChat = threads.find((thread) => thread.id === activeThreadId)?.title ?? 'New chat';
+  const activeChat =
+    threads.find((thread) => thread.id === activeThreadId)?.title ?? "New chat";
   const containerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -48,8 +50,14 @@ export function ChatShell({ children, composer }: ChatShellProps) {
           <div className="font-medium">{activeChat}</div>
         </header>
         <div className="flex min-h-0 flex-1 flex-col">
-          <div ref={containerRef} className="shell-messages flex min-h-0 flex-1 px-6 py-6 pb-8 overflow-y-auto">
-            <div className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col">{children}</div>
+          <div
+            ref={containerRef}
+            className="shell-messages relative flex min-h-0 flex-1 px-6 py-6 pb-8 overflow-y-auto"
+          >
+            <div className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col">
+              {children}
+            </div>
+            <ChatQuestionSelector />
           </div>
           <div className="sticky bottom-0 bg-background px-6 py-4">
             <div className="mx-auto w-full max-w-3xl">{composer}</div>

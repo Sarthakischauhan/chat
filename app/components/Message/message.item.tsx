@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { getUserDisplayText } from "@/lib/message/user";
 import { useChat } from "../Chat/chat.context";
+import { getThreadQuestionTargetId } from "../Chat/chat.questionSelector";
 import { MessageContent } from "../Message/message.content";
 
 export const MessageItem = ({ message }: { message: UIMessage }) => {
@@ -38,7 +39,10 @@ export const MessageItem = ({ message }: { message: UIMessage }) => {
 
   if (isUser) {
     return (
-      <div className="flex w-full justify-end">
+      <div
+        id={getThreadQuestionTargetId(message.id)}
+        className="flex w-full justify-end rounded-2xl"
+      >
         <div className="group flex max-w-[85%] flex-col items-end gap-1.5 sm:max-w-[72%]">
           <div className="w-full rounded-3xl bg-muted/55 px-5 py-2.5 text-foreground shadow-xs shadow-black/[0.02] transition-colors dark:bg-muted/45">
             {isEditing ? (
