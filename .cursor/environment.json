@@ -1,0 +1,16 @@
+{
+  "name": "Chat SDK",
+  "install": "bash .cursor/install.sh",
+  "start": "bash .cursor/start.sh",
+  "terminals": [
+    {
+      "name": "ollama",
+      "command": "ollama serve"
+    },
+    {
+      "name": "next-dev",
+      "command": "npm run dev"
+    }
+  ],
+  "ports": [3000, 11434]
+}
