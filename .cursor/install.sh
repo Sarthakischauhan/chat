@@ -30,6 +30,10 @@ fi
 echo "==> Node dependencies (frozen lockfile)"
 bun install --frozen-lockfile
 
+echo "==> Build workspace packages (produces dist/ consumed by the Next app)"
+npm run build:chat
+npm run build:ai-sdk
+
 echo "==> App environment file"
 if [ ! -f examples/next/.env.local ]; then
   cp examples/next/env.example examples/next/.env.local
