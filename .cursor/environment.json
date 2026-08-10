@@ -5,7 +5,7 @@
   "terminals": [
     {
       "name": "ollama",
-      "command": "ollama serve"
+      "command": "bash -lc 'if curl -sf http://localhost:11434/api/version >/dev/null 2>&1; then echo Ollama already serving on 127.0.0.1:11434; exec sleep infinity; fi; exec ollama serve'"
     },
     {
       "name": "next-dev",
