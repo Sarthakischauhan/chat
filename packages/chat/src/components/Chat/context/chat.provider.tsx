@@ -19,7 +19,7 @@ export type ChatContextProviderProps = {
 export function ChatContextProvider({
   adapter,
   children,
-  defaultProvider = ProviderId.OLLAMA,
+  defaultProvider = ProviderId.MOCK,
   defaultThreadId,
   registryUrl = "/api/ai/registry",
 }: ChatContextProviderProps) {

@@ -36,7 +36,7 @@ type ModelProviderProps = {
 
 export function ModelProvider({
   children,
-  defaultProvider = ProviderId.OLLAMA,
+  defaultProvider = ProviderId.MOCK,
   registryUrl = "/api/ai/registry",
 }: ModelProviderProps) {
   const [registry, setRegistry] = useState<RegistryConfig>(defaultRegistry);
@@ -67,6 +67,13 @@ export function ModelProvider({
         }
 
         setRegistry(data);
+        const preferred =
+          data.providers.find((entry) => entry.id === data.defaultProviderId) ??
+          data.providers[0];
+        if (preferred) {
+          setProviderState(preferred.id);
+          setModelState(preferred.defaultModel);
+        }
       } catch {
         if (!cancelled) {
           setRegistry(defaultRegistry);
