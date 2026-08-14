@@ -39,6 +39,36 @@ const asString = (value: unknown, fallback = "") =>
 
 const getStaticToolName = (type: string) => type.slice("tool-".length);
 
+const normalizeToolPart = (
+  part: RawPart,
+  toolName: string,
+): AgentToolPart => {
+  const tool: AgentToolPart = {
+    type: "tool",
+    toolName,
+    toolCallId: asString(part.toolCallId),
+    state: asToolState(part.state),
+    input: part.input,
+    output: part.output,
+    errorText: typeof part.errorText === "string" ? part.errorText : undefined,
+    title: typeof part.title === "string" ? part.title : undefined,
+    providerExecuted:
+      typeof part.providerExecuted === "boolean" ? part.providerExecuted : undefined,
+    preliminary: typeof part.preliminary === "boolean" ? part.preliminary : undefined,
+  };
+
+  if (part.approval && typeof part.approval === "object") {
+    const approval = part.approval as Record<string, unknown>;
+    tool.approval = {
+      id: asString(approval.id),
+      approved: typeof approval.approved === "boolean" ? approval.approved : undefined,
+      reason: typeof approval.reason === "string" ? approval.reason : undefined,
+    };
+  }
+
+  return tool;
+};
+
 /**
  * Normalize an AI SDK / UI message part into a stable AgentPart for rendering.
  */
@@ -80,58 +110,39 @@ export const normalizeAgentPart = (part: RawPart): AgentPart => {
         url: asString(part.url),
         filename: typeof part.filename === "string" ? part.filename : undefined,
       };
-    case "dynamic-tool": {
-      const tool: AgentToolPart = {
-        type: "tool",
-        toolName: asString(part.toolName, "tool"),
-        toolCallId: asString(part.toolCallId),
-        state: asToolState(part.state),
-        input: part.input,
-        output: part.output,
-        errorText: typeof part.errorText === "string" ? part.errorText : undefined,
-        title: typeof part.title === "string" ? part.title : undefined,
-        providerExecuted:
-          typeof part.providerExecuted === "boolean" ? part.providerExecuted : undefined,
-        preliminary: typeof part.preliminary === "boolean" ? part.preliminary : undefined,
+    case "tool":
+    case "dynamic-tool":
+      return normalizeToolPart(part, asString(part.toolName, "tool"));
+    case "data":
+      return {
+        type: "data",
+        name: asString(part.name, "data"),
+        data: part.data,
+        id: typeof part.id === "string" ? part.id : undefined,
       };
-
-      if (part.approval && typeof part.approval === "object") {
-        const approval = part.approval as Record<string, unknown>;
-        tool.approval = {
-          id: asString(approval.id),
-          approved: typeof approval.approved === "boolean" ? approval.approved : undefined,
-          reason: typeof approval.reason === "string" ? approval.reason : undefined,
-        };
-      }
-
-      return tool;
-    }
+    case "widget":
+      return {
+        type: "widget",
+        name: asString(part.name, "widget"),
+        props:
+          part.props && typeof part.props === "object" && !Array.isArray(part.props)
+            ? (part.props as Record<string, unknown>)
+            : {},
+        id: typeof part.id === "string" ? part.id : undefined,
+        interactive: part.interactive === true,
+      };
+    case "unknown":
+      return {
+        type: "unknown",
+        rawType: asString(part.rawType, "unknown"),
+        raw:
+          part.raw && typeof part.raw === "object" && !Array.isArray(part.raw)
+            ? (part.raw as Record<string, unknown>)
+            : part,
+      };
     default: {
       if (part.type.startsWith("tool-")) {
-        const tool: AgentToolPart = {
-          type: "tool",
-          toolName: getStaticToolName(part.type) || "tool",
-          toolCallId: asString(part.toolCallId),
-          state: asToolState(part.state),
-          input: part.input,
-          output: part.output,
-          errorText: typeof part.errorText === "string" ? part.errorText : undefined,
-          title: typeof part.title === "string" ? part.title : undefined,
-          providerExecuted:
-            typeof part.providerExecuted === "boolean" ? part.providerExecuted : undefined,
-          preliminary: typeof part.preliminary === "boolean" ? part.preliminary : undefined,
-        };
-
-        if (part.approval && typeof part.approval === "object") {
-          const approval = part.approval as Record<string, unknown>;
-          tool.approval = {
-            id: asString(approval.id),
-            approved: typeof approval.approved === "boolean" ? approval.approved : undefined,
-            reason: typeof approval.reason === "string" ? approval.reason : undefined,
-          };
-        }
-
-        return tool;
+        return normalizeToolPart(part, getStaticToolName(part.type) || "tool");
       }
 
       if (part.type.startsWith("data-")) {
