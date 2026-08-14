@@ -1,14 +1,14 @@
 "use client";
 
 import { Chat } from "@sarchauhan/chat";
-import { createAiSdkAdapter } from "@sarchauhan/adapter/ai-sdk";
+import { createSymphonyAdapter } from "@/lib/symphony/adapter";
 import { exampleWidgets } from "@/components/chat-widgets";
 
 export default function Page() {
   return (
     <main className="chat-app-shell">
       <Chat
-        adapter={createAiSdkAdapter()}
+        adapter={createSymphonyAdapter()}
         widgets={exampleWidgets}
         defaultTheme="system"
         className="chat-app-frame"

@@ -19,6 +19,7 @@
       }
     ],
     "paths": {
+      "@sarchauhan/protocol": ["../../packages/protocol/src/index.ts"],
       "@sarchauhan/adapter": ["../../packages/adapter/src/index.ts"],
       "@sarchauhan/adapter/ai-sdk": ["../../packages/adapter/ai-sdk/src/index.ts"],
       "@sarchauhan/chat": ["../../packages/chat/src/index.ts"],
