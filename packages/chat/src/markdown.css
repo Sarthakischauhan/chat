@@ -125,6 +125,25 @@
     color: inherit;
   }
 
+  .md-inline-code {
+    display: inline;
+    padding: 0.125rem 0.375rem;
+    border: 0.5px solid var(--chat-border);
+    border-radius: var(--chat-radius-sm);
+    background: var(--chat-control-bg);
+    color: var(--chat-fg);
+    font-family: var(--chat-font-mono);
+    font-size: 0.85em;
+    line-height: 1.35;
+    white-space: normal;
+  }
+
+  .chat-code-markdown {
+    border: 0.5px solid var(--chat-border) !important;
+    border-radius: var(--chat-radius-md) !important;
+    box-shadow: none !important;
+  }
+
   .md-content pre code.hljs {
     color: #d4d4d4;
   }
