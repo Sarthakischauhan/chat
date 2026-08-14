@@ -24,6 +24,7 @@ export { ThreadList } from "./components/Chat/chat.thread-list";
 export { Message, MessageList } from "./components/Message/message";
 export { MessageItem } from "./components/Message/message.item";
 export { MessagePart } from "./components/Message/message.item";
+export { MessageUsage } from "./components/Message/message.usage";
 export { messagesFromEvents } from "./lib/events";
 export { render, renderChat, type RenderChatOptions } from "./render";
 export type {
