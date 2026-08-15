@@ -12,6 +12,7 @@ const meta: Meta<FeedbackStoryArgs> = {
   title: "Messages/Feedback",
   component: MessageFeedback,
   tags: ["autodocs"],
+  parameters: { hideComposer: true },
   args: {
     responseText: "The chat package turns agent output into message parts.",
     canRegenerate: true,

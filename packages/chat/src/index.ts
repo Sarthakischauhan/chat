@@ -17,6 +17,8 @@ export type {
   RegistryProvider,
 } from "./components/Chat/chat.context";
 export { Message } from "./components/Message/message";
+export { MessageContent } from "./components/Message/message.content";
+export { MessageFeedback } from "./components/Message/message.feedback";
 export { MessageUsage } from "./components/Message/message.usage";
 export { ThemeProvider, useTheme, type ChatTheme } from "./theme/theme.context";
 export { ThemeToggle } from "./theme/theme.toggle";

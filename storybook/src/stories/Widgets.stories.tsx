@@ -19,6 +19,7 @@ type WidgetStoryArgs = {
 const meta: Meta<WidgetStoryArgs> = {
   title: "Widgets/Registry",
   tags: ["autodocs"],
+  parameters: { hideComposer: true },
   args: {
     kind: "poll",
     interactive: true,

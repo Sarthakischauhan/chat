@@ -12,6 +12,7 @@ const meta: Meta<MessageStoryArgs> = {
   title: "Messages/Content",
   component: MessageContent,
   tags: ["autodocs"],
+  parameters: { hideComposer: true },
   args: {
     isUser: false,
     streamState: "complete",

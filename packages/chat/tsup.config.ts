@@ -16,6 +16,9 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
+  outExtension({ format }) {
+    return { js: format === "cjs" ? ".cjs" : ".js" };
+  },
   external: [
     "react",
     "react-dom",

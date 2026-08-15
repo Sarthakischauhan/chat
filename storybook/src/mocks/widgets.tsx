@@ -81,9 +81,11 @@ export const storybookWidgets: ChatWidgetInput = [
   defineWidget<{ options?: string[]; question?: string }>("poll", PollWidget, {
     label: "Question",
     title: "Poll",
+    shell: false,
   }),
   defineWidget("counter", CounterWidget, {
     label: "Counter",
     title: "Live counter",
+    shell: false,
   }),
 ];
