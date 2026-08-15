@@ -5,7 +5,7 @@
   "terminals": [
     {
       "name": "next-dev",
-      "command": "npm run dev"
+      "command": "bash .cursor/dev.sh"
     }
   ],
   "ports": [3000]

@@ -20,12 +20,8 @@ fetch_verify() {
   printf '%s  %s\n' "$sha" "$dest" | sha256sum -c - >/dev/null
 }
 
-# Echo "VERSION CLUSTER" for the first configured PostgreSQL cluster so we never
-# assume a hardcoded "16 main" (the unversioned postgresql metapackage installs
-# whatever version the base image defaults to).
-pg_cluster_spec() {
-  pg_lsclusters -h 2>/dev/null | awk 'NR==1 {print $1, $2}'
-}
+# shellcheck source=/dev/null
+source "$ROOT/.cursor/postgres.sh"
 
 echo "==> System packages (PostgreSQL, unzip)"
 if ! command -v psql >/dev/null 2>&1; then
@@ -62,24 +58,10 @@ npm run build:chat
 npm run build:ai-sdk
 
 echo "==> App environment file"
-if [ ! -f examples/next/.env.local ]; then
-  cp examples/next/env.example examples/next/.env.local
-fi
+ensure_app_env "$ROOT"
 
 echo "==> Start PostgreSQL cluster"
-read -r PG_VER PG_CLUSTER <<<"$(pg_cluster_spec)"
-if [ -z "${PG_VER:-}" ]; then
-  echo "No PostgreSQL cluster found" >&2
-  exit 1
-fi
-sudo pg_ctlcluster "$PG_VER" "$PG_CLUSTER" start 2>/dev/null || true
-for _ in $(seq 1 30); do pg_isready -h localhost -p 5432 >/dev/null 2>&1 && break; sleep 1; done
-
-echo "==> Ensure database role and database"
-sudo -u postgres psql -tc "SELECT 1 FROM pg_roles WHERE rolname='chat'" | grep -q 1 \
-  || sudo -u postgres psql -c "CREATE ROLE chat LOGIN PASSWORD 'chat';"
-sudo -u postgres psql -tc "SELECT 1 FROM pg_database WHERE datname='chat'" | grep -q 1 \
-  || sudo -u postgres createdb -O chat chat
+ensure_postgres
 
 echo "==> Prisma client + schema"
 export DATABASE_URL="$DB_URL"
