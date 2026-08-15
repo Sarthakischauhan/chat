@@ -8,10 +8,12 @@
     "packages/chat",
     "packages/chat-tui",
     "packages/protocol",
-    "examples/tui"
+    "examples/tui",
+    "storybook"
   ],
   "scripts": {
     "dev": "next dev examples/next",
+    "storybook": "npm run dev -w @sarchauhan/storybook",
     "build": "next build examples/next",
     "build:protocol": "npm run build -w @sarchauhan/protocol",
     "build:adapter": "npm run build -w @sarchauhan/protocol && npm run build -w @sarchauhan/adapter",
