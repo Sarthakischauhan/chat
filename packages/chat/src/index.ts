@@ -17,7 +17,11 @@ export type {
   RegistryProvider,
 } from "./components/Chat/chat.context";
 export { Message } from "./components/Message/message";
+export { MessageFeedback } from "./components/Message/message.feedback";
 export { MessageUsage } from "./components/Message/message.usage";
+export { LoadingState, formatElapsed, formatElapsedWords } from "./components/Message/message.loading";
+export { ThinkingBlock } from "./components/Message/message.thinking";
+export { MessageContent } from "./components/Message/message.content";
 export { ThemeProvider, useTheme, type ChatTheme } from "./theme/theme.context";
 export { ThemeToggle } from "./theme/theme.toggle";
 export { BaseWidget, type BaseWidgetProps } from "./components/Widget/base.widget";

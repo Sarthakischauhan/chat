@@ -1,57 +1,21 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { ChevronDown, Sparkles } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "../../lib/utils";
-
-const useElapsedTime = (active: boolean) => {
-  const startedAtRef = useRef(0);
-  const [elapsed, setElapsed] = useState(0);
-
-  useEffect(() => {
-    if (!active) {
-      return;
-    }
-
-    startedAtRef.current = Date.now();
-    const timer = window.setInterval(() => {
-      setElapsed(Date.now() - startedAtRef.current);
-    }, 100);
-    return () => window.clearInterval(timer);
-  }, [active]);
-
-  return elapsed;
-};
-
-export const formatElapsed = (milliseconds: number) => {
-  const seconds = Math.max(0, Math.floor(milliseconds / 1000));
-  if (seconds < 60) {
-    return `${seconds}s`;
-  }
-  const minutes = Math.floor(seconds / 60);
-  const remainder = seconds % 60;
-  return remainder > 0 ? `${minutes}m ${remainder}s` : `${minutes}m`;
-};
-
-const LoadingDots = ({ active }: { active: boolean }) => (
-  <span className={cn("md-thinking-dots", !active && "is-done")} aria-hidden="true">
-    <span />
-    <span />
-    <span />
-  </span>
-);
+import { formatElapsedWords, useElapsedTime } from "./message.loading";
 
 type ThinkingBlockProps = {
   isComplete: boolean;
+  elapsedMs?: number;
   children?: ReactNode;
 };
 
-export const ThinkingBlock = ({ isComplete, children }: ThinkingBlockProps) => {
-  const elapsed = useElapsedTime(!isComplete);
+export const ThinkingBlock = ({ isComplete, elapsedMs, children }: ThinkingBlockProps) => {
   const [isOpen, setIsOpen] = useState(true);
+  const measuredElapsed = useElapsedTime(!isComplete);
+  const elapsed = elapsedMs ?? measuredElapsed;
 
-  // Keep a completed thought visible. The former controlled `open={!isComplete}`
-  // closed the details element as soon as the final reasoning event arrived.
   useEffect(() => {
     if (!isComplete) {
       setIsOpen(true);
@@ -68,15 +32,11 @@ export const ThinkingBlock = ({ isComplete, children }: ThinkingBlockProps) => {
       onToggle={(event) => setIsOpen(event.currentTarget.open)}
     >
       <summary>
-        <LoadingDots active={!isComplete} />
-        <span className="md-thinking-label">{isComplete ? "Thought" : "Thinking"}</span>
-        {!isComplete ? (
-          <span className="md-thinking-timer" role="timer">
-            {formatElapsed(elapsed)}
-          </span>
-        ) : (
-          <ChevronDown className="md-thinking-chevron" aria-hidden="true" />
-        )}
+        <Sparkles className="md-thinking-sparkle" aria-hidden="true" />
+        <span className="md-thinking-label">
+          {isComplete ? `Thought for ${formatElapsedWords(elapsed)}` : "Thinking"}
+        </span>
+        {isComplete && <ChevronDown className="md-thinking-chevron" aria-hidden="true" />}
       </summary>
       {children}
     </details>
