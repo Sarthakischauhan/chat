@@ -1,123 +1,151 @@
 
-@keyframes thinking-stream {
-  0% {
-    background-position: 200% 0;
-  }
-
+@keyframes md-thinking-bounce {
+  0%,
+  80%,
   100% {
-    background-position: 0% 0;
-  }
-}
-
-@keyframes thinking-dots {
-  0% {
-    width: 0;
+    transform: translateY(0);
+    opacity: 0.35;
   }
 
-  100% {
-    width: 1.5em;
+  40% {
+    transform: translateY(-2px);
+    opacity: 1;
   }
 }
 
 @layer components {
   .md-thinking {
-    @reference my-3;
+    margin: 0.75rem 0;
   }
 
   .md-thinking > summary {
-    @reference inline-flex items-center gap-2 py-1 text-sm font-medium text-muted-foreground transition-colors;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--chat-fg-muted);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.25;
     list-style: none;
+    transition: opacity 160ms ease;
+  }
+
+  .md-thinking-complete > summary {
+    cursor: pointer;
+    opacity: 0.68;
+  }
+
+  .md-thinking-complete > summary:hover {
+    opacity: 1;
+  }
+
+  .md-thinking-pending > summary {
+    cursor: default;
   }
 
   .md-thinking > summary::-webkit-details-marker {
     display: none;
   }
 
-  .md-thinking > summary::before {
-    @reference inline-block h-[0.8rem] w-[0.8rem] shrink-0 text-muted-foreground/70 transition-transform duration-200;
-    content: "";
-    background-color: currentColor;
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M4.5 2.5L8 6l-3.5 3.5' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M4.5 2.5L8 6l-3.5 3.5' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-    mask-position: center;
-    -webkit-mask-size: contain;
-    mask-size: contain;
-  }
-
   .md-thinking-label {
-    @reference tracking-tight;
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
   }
 
-  .md-thinking-indicator {
-    @reference hidden;
+  .md-thinking-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.18rem;
+    flex: 0 0 auto;
   }
 
-  .md-thinking-indicator-pending {
-    @reference hidden;
+  .md-thinking-dots span {
+    width: 0.28rem;
+    height: 0.28rem;
+    border-radius: 999px;
+    background: var(--chat-fg-muted);
+    animation: md-thinking-bounce 1.2s ease-in-out infinite;
   }
 
-  .md-thinking-complete > summary {
-    @reference cursor-pointer;
+  .md-thinking-dots span:nth-child(2) {
+    animation-delay: 0.15s;
   }
 
-  .md-thinking-pending > summary {
-    @reference cursor-default;
+  .md-thinking-dots span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  .md-thinking-dots.is-done {
+    display: none;
+  }
+
+  .md-thinking-timer {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    opacity: 0.55;
+  }
+
+  .md-thinking-chevron {
+    width: 0.85rem;
+    height: 0.85rem;
+    opacity: 0.65;
+    transition: transform 160ms ease;
+  }
+
+  .md-thinking-complete[open] .md-thinking-chevron {
+    transform: rotate(180deg);
   }
 
   .md-thinking[open] > summary {
-    @reference text-foreground/80;
+    color: var(--chat-fg);
   }
 
-  .md-thinking[open] > summary::before {
-    transform: rotate(90deg);
-  }
-
-  .md-thinking-body {
-    @reference mt-2 pl-4 text-sm leading-6 text-muted-foreground;
-    opacity: 0.72;
-  }
-
-  .md-thinking-body > :first-child {
-    @reference mt-0;
-  }
-
-  .md-thinking-body > :last-child {
-    @reference mb-0;
+  .md-thinking-pending {
+    border: 1px solid var(--chat-border);
+    border-radius: var(--chat-radius-md);
+    background: color-mix(in oklab, var(--chat-control-bg) 55%, transparent);
+    padding: 0.5rem 0.75rem;
   }
 
   .md-thinking-pending > summary {
     color: color-mix(in oklab, var(--foreground) 58%, var(--muted-foreground));
+    opacity: 0.8;
   }
 
-  .md-thinking-pending > summary .md-thinking-label {
-    background-image: linear-gradient(
-      90deg,
-      color-mix(in oklab, var(--muted-foreground) 92%, transparent) 0%,
-      color-mix(in oklab, var(--foreground) 55%, transparent) 45%,
-      color-mix(in oklab, var(--muted-foreground) 92%, transparent) 100%
-    );
-    background-size: 200% 100%;
-    background-position: 200% 0;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: thinking-stream 1.8s linear infinite;
+  .md-thinking-pending .md-thinking-dots span {
+    background: var(--chat-accent);
   }
 
-  .md-thinking-pending > summary .md-thinking-label::after {
-    display: inline-block;
-    width: 0;
-    overflow: hidden;
-    vertical-align: bottom;
-    content: "...";
-    animation: thinking-dots 1.2s steps(4, end) infinite;
+  .md-thinking-body {
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--chat-border);
+    color: var(--chat-fg-muted);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    opacity: 0.62;
+  }
+
+  .md-thinking-body > :first-child {
+    margin-top: 0;
+  }
+
+  .md-thinking-body > :last-child {
+    margin-bottom: 0;
   }
 
   .md-thinking-pending .md-thinking-body {
     color: color-mix(in oklab, var(--chat-fg-muted, var(--muted-foreground)) 88%, var(--chat-fg, var(--foreground)) 12%);
+  }
+
+  .chat-message-content .md-thinking > summary,
+  .chat-message-content .md-thinking > summary .md-thinking-label {
+    font-family: var(--chat-font-sans);
   }
 
   .md-content-assistant,
@@ -185,4 +213,14 @@
   .md-content .hljs-variable {
     color: #dcdcaa;
   }
+}
+
+.chat-message-content .md-thinking > summary,
+.chat-message-content .md-thinking > summary .md-thinking-label {
+  font-family: var(--chat-font-sans);
+}
+
+.chat-message-content .md-thinking-label {
+  font-size: 0.875rem;
+  font-weight: 600;
 }

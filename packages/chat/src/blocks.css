@@ -1,22 +1,7 @@
-.agent-step {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  margin: 0.35rem 0;
-  color: color-mix(in oklab, currentColor 42%, transparent);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.agent-step::before {
-  content: "";
-  width: 0.35rem;
-  height: 0.35rem;
-  border-radius: 999px;
-  background: currentColor;
-  opacity: 0.42;
+@keyframes agent-tool-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .agent-tool,
@@ -41,7 +26,47 @@
   display: none;
 }
 
-.agent-tool > summary::before,
+.agent-tool-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  color: var(--chat-fg-muted);
+}
+
+.agent-tool-pending .agent-tool-dot {
+  color: color-mix(in oklab, #fbbf24 64%, currentColor);
+}
+
+.agent-tool-complete .agent-tool-dot {
+  color: color-mix(in oklab, #34d399 48%, currentColor);
+}
+
+.agent-tool-spinner {
+  width: 0.62rem;
+  height: 0.62rem;
+  border: 1.5px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 999px;
+  animation: agent-tool-spin 0.8s linear infinite;
+  opacity: 0.9;
+}
+
+.agent-event-marker {
+  width: 0.42rem;
+  height: 0.42rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.4;
+}
+
+.agent-event .agent-tool-body {
+  padding-top: 0.35rem;
+}
+
 .agent-data > summary::before {
   content: "";
   width: 0.42rem;
@@ -55,7 +80,6 @@
     transform 160ms ease;
 }
 
-.agent-tool[open] > summary::before,
 .agent-data[open] > summary::before {
   opacity: 0.62;
   transform: scale(0.72);

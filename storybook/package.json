@@ -1,0 +1,27 @@
+{
+  "name": "@sarchauhan/storybook",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "storybook dev -p 6006",
+    "build": "storybook build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sarchauhan/chat": "0.1.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-a11y": "10.5.8",
+    "@storybook/addon-docs": "10.5.8",
+    "@storybook/react": "10.5.8",
+    "@storybook/react-vite": "10.5.8",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.2.0",
+    "react": "^19",
+    "react-dom": "^19",
+    "storybook": "10.5.8",
+    "typescript": "^5",
+    "vite": "^7.3.6"
+  }
+}

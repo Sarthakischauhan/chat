@@ -3,6 +3,7 @@ import { Box, Text } from "ink";
 import { normalizeAgentParts, type AgentPart } from "@sarchauhan/protocol";
 import type { ChatMessage } from "../../types";
 import { Spinner } from "../Chat/chat.spinner";
+import { MessageUsage } from "./message.usage";
 
 const formatUnknown = (value: unknown) => {
   if (value == null) {
@@ -61,6 +62,9 @@ export function MessagePart({ part }: { part: AgentPart }) {
     case "file":
       return <Text color="magenta">📎 {part.filename ?? part.url}</Text>;
     case "data":
+      if (part.name === "usage" || part.name === "context" || part.name === "context-warning") {
+        return <MessageUsage part={part} />;
+      }
       return (
         <Text dimColor>
           data:{part.name} {formatUnknown(part.data).slice(0, 120)}

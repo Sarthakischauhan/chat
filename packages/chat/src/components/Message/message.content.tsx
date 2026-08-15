@@ -18,6 +18,7 @@ import { cn } from "../../lib/utils";
 import { useWidgets } from "../Widget/widget.context";
 import { WidgetRenderer } from "../Widget/widget.renderer";
 import { MarkdownContent } from "./message.markdown";
+import { ThinkingBlock } from "./message.thinking";
 
 type MessageContentProps = {
   parts: Array<{ type: string; [key: string]: unknown }>;
@@ -64,20 +65,13 @@ const ReasoningBlock = ({ part }: { part: AgentReasoningPart }) => {
   const isComplete = part.state !== "streaming";
 
   return (
-    <details
-      className={`md-thinking ${isComplete ? "md-thinking-complete" : "md-thinking-pending"}`}
-      open={!isComplete}
-    >
-      <summary>
-        <span className="md-thinking-label">{isComplete ? "Thought" : "Thinking"}</span>
-        <span className={`md-thinking-indicator ${isComplete ? "" : "md-thinking-indicator-pending"}`} />
-      </summary>
+    <ThinkingBlock isComplete={isComplete}>
       {!!part.text.trim() && (
         <div className="md-thinking-body">
           <MarkdownContent>{part.text}</MarkdownContent>
         </div>
       )}
-    </details>
+    </ThinkingBlock>
   );
 };
 
@@ -90,6 +84,21 @@ const ToolBlock = ({ part }: { part: AgentToolPart }) => {
   return (
     <details className={`agent-tool ${isPending ? "agent-tool-pending" : "agent-tool-complete"}`} open={isPending}>
       <summary>
+        <span className="agent-tool-dot" aria-hidden="true">
+          {isPending ? (
+            <span className="agent-tool-spinner" />
+          ) : (
+            <svg viewBox="0 0 12 12" width="10" height="10" fill="none" aria-hidden="true">
+              <path
+                d="M2.5 6.5 5 9l4.5-6"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
+        </span>
         <span className="agent-tool-name">{part.title ?? part.toolName}</span>
         <span className="agent-tool-state">{toolStateLabel(part.state)}</span>
       </summary>
@@ -152,12 +161,15 @@ const FileBlock = ({ part }: { part: AgentFilePart }) => {
   );
 };
 
-const DataBlock = ({ part }: { part: AgentDataPart }) => (
-  <details className="agent-data">
+const AgentEventBlock = ({ part }: { part: AgentDataPart }) => (
+  <details className="agent-tool agent-event">
     <summary>
+      <span className="agent-event-marker" aria-hidden="true" />
       <span className="agent-tool-name">data.{part.name}</span>
     </summary>
-    <pre className="agent-tool-code">{formatJson(part.data)}</pre>
+    <div className="agent-tool-body">
+      <pre className="agent-tool-code">{formatJson(part.data)}</pre>
+    </div>
   </details>
 );
 
@@ -192,23 +204,13 @@ const TextWithLegacyThinking = ({ text, isUser }: { text: string; isUser: boolea
           const isComplete = segment.isComplete ?? true;
 
           return (
-            <details
-              key={`thinking-${index}`}
-              className={`md-thinking ${isComplete ? "md-thinking-complete" : "md-thinking-pending"}`}
-              open={!isComplete}
-            >
-              <summary>
-                <span className="md-thinking-label">{isComplete ? "Thought" : "Thinking"}</span>
-                <span
-                  className={`md-thinking-indicator ${isComplete ? "" : "md-thinking-indicator-pending"}`}
-                />
-              </summary>
+            <ThinkingBlock key={`thinking-${index}`} isComplete={isComplete}>
               {!!segment.content.trim() && (
                 <div className="md-thinking-body">
                   <MarkdownContent>{segment.content}</MarkdownContent>
                 </div>
               )}
-            </details>
+            </ThinkingBlock>
           );
         }
 
@@ -275,12 +277,6 @@ const PartView = ({ part, index, isUser }: { part: AgentPart; index: number; isU
       return isUser ? null : <ReasoningBlock key={`reasoning-${index}`} part={part} />;
     case "tool":
       return isUser ? null : <ToolBlock key={`tool-${part.toolCallId || index}`} part={part} />;
-    case "step-start":
-      return isUser ? null : (
-        <div key={`step-${index}`} className="agent-step">
-          Step
-        </div>
-      );
     case "source-url":
       return <SourceUrlBlock key={`source-url-${part.sourceId || index}`} part={part} />;
     case "source-document":
@@ -288,14 +284,20 @@ const PartView = ({ part, index, isUser }: { part: AgentPart; index: number; isU
     case "file":
       return <FileBlock key={`file-${index}`} part={part} />;
     case "data":
-      return <DataBlock key={`data-${part.name}-${part.id || index}`} part={part} />;
+      if (part.name === "usage" || part.name === "context" || part.name === "context-warning") {
+        return null;
+      }
+      return <AgentEventBlock key={`data-${part.name}-${part.id || index}`} part={part} />;
     case "unknown":
       return (
-        <details key={`unknown-${index}`} className="agent-data">
+        <details key={`unknown-${index}`} className="agent-tool agent-event">
           <summary>
+            <span className="agent-event-marker" aria-hidden="true" />
             <span className="agent-tool-name">{part.rawType}</span>
           </summary>
-          <pre className="agent-tool-code">{formatJson(part.raw)}</pre>
+          <div className="agent-tool-body">
+            <pre className="agent-tool-code">{formatJson(part.raw)}</pre>
+          </div>
         </details>
       );
     default:

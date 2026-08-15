@@ -3,8 +3,14 @@
 import { useMessages, useThread } from "../Chat/context";
 import { MessageItem } from "../Message/message.item";
 
+const WaitingForResponse = () => (
+  <div className="chat-response-status" role="status" aria-live="polite">
+    Waiting for response
+  </div>
+);
+
 export const Message = () => {
-  const { messages } = useMessages();
+  const { messages, isSending } = useMessages();
   const { isLoadingThread } = useThread();
 
   if (isLoadingThread) {
@@ -35,6 +41,7 @@ export const Message = () => {
       {messages.map((message) => (
         <MessageItem key={message.id} message={message} />
       ))}
+      {isSending && messages.at(-1)?.role === "user" ? <WaitingForResponse /> : null}
     </div>
   );
 };
