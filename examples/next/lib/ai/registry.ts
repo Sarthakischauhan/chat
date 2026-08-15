@@ -4,7 +4,7 @@ import { anthropic } from "@ai-sdk/anthropic";
 import { google } from "@ai-sdk/google";
 import { createOllama } from "ollama-ai-provider-v2"
 
-export type ProviderId = "openai" | "anthropic" | "google" | "ollama";
+export type ProviderId = "mock" | "openai" | "anthropic" | "google" | "ollama";
 
 export type RegistryModel = {
   id: string;
@@ -25,8 +25,15 @@ export type RegistryConfig = {
 };
 
 export const aiRegistryConfig = {
-  defaultProviderId: "anthropic",
+  defaultProviderId: "mock",
   providers: [
+    {
+      id: "mock",
+      label: "Mock",
+      logo: "",
+      defaultModel: "canned",
+      models: [{ id: "canned", label: "Canned replies" }],
+    },
     {
       id: "openai",
       label: "OpenAI",

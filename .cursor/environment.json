@@ -4,13 +4,14 @@
   "start": "bash .cursor/start.sh",
   "terminals": [
     {
-      "name": "ollama",
-      "command": "bash -lc 'if curl -sf http://localhost:11434/api/version >/dev/null 2>&1; then echo Ollama already serving on 127.0.0.1:11434; exec sleep infinity; fi; exec ollama serve'"
-    },
-    {
       "name": "next-dev",
-      "command": "npm run dev"
+      "command": "bash .cursor/dev.sh"
     }
   ],
-  "ports": [3000, 11434]
+  "ports": [
+    {
+      "name": "next-dev",
+      "port": 3000
+    }
+  ]
 }

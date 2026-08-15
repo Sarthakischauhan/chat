@@ -14,6 +14,7 @@ import {
   registry,
   type ProviderId,
 } from "@/lib/ai/registry";
+import { streamMockChatResponse } from "@/lib/ai/mock-chat";
 import { ensureThread, getThreadMessages, saveThreadMessages } from "@/lib/db/chat";
 
 const Providers = aiRegistryConfig.providers.map((provider) => provider.id);
@@ -138,6 +139,15 @@ export async function POST(req: Request) {
 
   const modelId =
     providerConfig.models.find((entry) => entry.id === model)?.id ?? providerConfig.defaultModel;
+
+  if (provider === "mock") {
+    return streamMockChatResponse({
+      threadId: id,
+      messages,
+      modelId,
+    });
+  }
+
   const result = streamText({
     model: registry.languageModel(`${provider}:${modelId}`),
     system:
