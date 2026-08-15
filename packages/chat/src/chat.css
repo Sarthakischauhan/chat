@@ -7,12 +7,15 @@
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--chat-border);
-  border-radius: var(--chat-radius-lg);
-  background: var(--chat-bg);
+  border-radius: calc(var(--chat-radius-lg) + 0.15rem);
+  background:
+    radial-gradient(1200px 420px at 50% -8%, color-mix(in oklab, var(--chat-accent) 8%, transparent), transparent 60%),
+    var(--chat-bg);
   color: var(--chat-fg);
   font-family: var(--chat-font-sans);
   font-size: var(--chat-text);
   line-height: var(--chat-leading);
+  letter-spacing: -0.011em;
   isolation: isolate;
 }
 
@@ -97,9 +100,9 @@
 .chat-empty-title {
   margin: 0 0 var(--chat-space-2);
   color: var(--chat-fg);
-  font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: 1.35rem;
+  font-weight: 560;
+  letter-spacing: -0.04em;
   line-height: var(--chat-leading-tight);
 }
 
@@ -135,11 +138,12 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: var(--chat-space-2);
-  border-radius: calc(var(--chat-radius-lg) + 0.15rem);
+  gap: var(--chat-space-1);
+  border: 1px solid var(--chat-border);
+  border-radius: 1.65rem;
   background: var(--chat-composer-bg);
   box-shadow: var(--chat-composer-shadow);
-  padding: var(--chat-space-3);
+  padding: 0.55rem 0.65rem 0.45rem;
 }
 
 .chat-composer-row {
@@ -155,7 +159,7 @@
 }
 
 .chat-composer-input textarea {
-  min-height: 2.75rem;
+  min-height: 2.5rem;
   max-height: 10rem;
   width: 100%;
   resize: none;
@@ -166,7 +170,7 @@
   font: inherit;
   line-height: 1.5;
   outline: none;
-  padding: 0.7rem 0.85rem;
+  padding: 0.55rem 0.85rem 0.35rem;
 }
 
 .chat-composer-input textarea::placeholder {
@@ -180,8 +184,8 @@
 
 .chat-send {
   display: inline-flex;
-  height: 2.25rem;
-  width: 2.25rem;
+  height: 2.15rem;
+  width: 2.15rem;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
@@ -273,10 +277,10 @@
 
 .chat-message-bubble {
   width: 100%;
-  border-radius: 1.35rem;
+  border-radius: 1.15rem 1.15rem 0.4rem 1.15rem;
   background: var(--chat-user-bg);
   color: var(--chat-user-fg);
-  padding: 0.7rem 1.05rem;
+  padding: 0.65rem 1rem;
 }
 
 .chat-message-user-inner.is-editing .chat-message-bubble {
@@ -316,11 +320,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.85rem;
+  height: 1.85rem;
   padding: 0;
   border: 0;
-  border-radius: var(--chat-radius-sm);
+  border-radius: var(--chat-radius-pill);
   background: transparent;
   color: var(--chat-fg-subtle);
   cursor: pointer;

@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
 :root {
   --storybook-chat-surface-width: 48rem;
   --storybook-chat-surface-height: 36rem;
@@ -9,6 +11,32 @@
   min-height: 100vh;
   place-items: center;
   padding: 2rem;
+  background:
+    radial-gradient(900px 280px at 50% 0%, rgba(196, 93, 38, 0.08), transparent 55%),
+    #ece7dc;
+}
+
+.storybook-stage:has(.chat-root[data-theme="dark"]) {
+  background:
+    radial-gradient(900px 280px at 50% 0%, rgba(224, 138, 79, 0.1), transparent 55%),
+    #0f0e0c;
+}
+
+.storybook-chat-surface {
+  width: var(--storybook-chat-surface-width);
+  max-width: calc(100vw - 2rem);
+  height: min(70vh, var(--storybook-chat-surface-height));
+  min-height: 32rem;
+  box-sizing: border-box;
+  box-shadow:
+    0 0 0 1px rgba(28, 25, 21, 0.04),
+    0 24px 60px rgba(28, 25, 21, 0.1);
+}
+
+.storybook-stage:has(.chat-root[data-theme="dark"]) .storybook-chat-surface {
+  box-shadow:
+    0 0 0 1px rgba(244, 239, 230, 0.06),
+    0 28px 70px rgba(0, 0, 0, 0.55);
 }
 
 .storybook-stage[data-surface="compact"] {
@@ -21,14 +49,6 @@
 
 .storybook-stage[data-surface="wide"] {
   --storybook-chat-surface-width: 64rem;
-}
-
-.storybook-chat-surface {
-  width: var(--storybook-chat-surface-width);
-  max-width: calc(100vw - 2rem);
-  height: min(70vh, var(--storybook-chat-surface-height));
-  min-height: 32rem;
-  box-sizing: border-box;
 }
 
 .storybook-story-content {

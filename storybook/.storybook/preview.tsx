@@ -1,5 +1,5 @@
 import type { Preview } from "@storybook/react";
-import "@sarchauhan/chat/styles.css";
+import "../../packages/chat/src/styles.css";
 import "./preview.css";
 import { withChatRoot } from "../src/decorators/chat-root";
 

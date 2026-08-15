@@ -97,6 +97,7 @@ const WidgetConversation = ({ kind, interactive }: Pick<WidgetStoryArgs, "kind" 
 };
 
 export const RegisteredWidget: StoryObj<WidgetStoryArgs> = {
+  name: "Approval card",
   render: ({ kind, interactive }) => (
     <WidgetConversation kind={kind} interactive={interactive} />
   ),

@@ -28,7 +28,7 @@ export const Message = () => {
           <div>
             <p className="chat-empty-title">How can I help?</p>
             <p className="chat-empty-copy">
-              Ask a question, explore ideas, or use tools and widgets when the agent needs them.
+              Ask a question, attach context, or let the agent gather tools before it answers.
             </p>
           </div>
         </div>

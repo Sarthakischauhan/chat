@@ -105,5 +105,5 @@
 
 .chat-model-content .chat-model-item [data-slot="select-item-indicator"] {
   right: var(--chat-space-2, 0.5rem);
-  color: var(--chat-accent, #10a37f);
+  color: var(--chat-accent);
 }

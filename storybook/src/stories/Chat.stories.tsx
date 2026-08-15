@@ -106,6 +106,7 @@ const widgetScript = (userText: string): StreamStep[] => {
 };
 
 export const WidgetInteraction: StoryObj<ChatStoryArgs> = {
+  name: "Widget approval",
   render: ({ height, width }) => (
     <StoryChat
       adapter={createScriptedAdapter(widgetScript)}
@@ -119,6 +120,7 @@ export const WidgetInteraction: StoryObj<ChatStoryArgs> = {
 };
 
 export const ExistingConversation: StoryObj<ChatStoryArgs> = {
+  name: "Existing conversation",
   render: ({ height, width }) => (
     <StoryChat
       adapter={existingThreadAdapter}
@@ -136,6 +138,7 @@ const emptyAdapter = {
 };
 
 export const EmptyConversation: StoryObj<ChatStoryArgs> = {
+  name: "Empty conversation",
   render: ({ height, width }) => (
     <StoryChat
       adapter={emptyAdapter}

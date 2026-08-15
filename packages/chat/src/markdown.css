@@ -105,11 +105,17 @@
     color: var(--chat-fg);
   }
 
+  .md-thinking-complete > summary,
   .md-thinking-pending {
     border: 1px solid var(--chat-border);
-    border-radius: var(--chat-radius-md);
-    background: color-mix(in oklab, var(--chat-control-bg) 55%, transparent);
-    padding: 0.5rem 0.75rem;
+    border-radius: var(--chat-radius-pill);
+    background: var(--chat-control-bg);
+    padding: 0.32rem 0.75rem;
+    width: fit-content;
+  }
+
+  .md-thinking-pending {
+    padding: 0.38rem 0.8rem;
   }
 
   .md-thinking-pending > summary {

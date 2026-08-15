@@ -1,7 +1,7 @@
 import type { AgentPart, ChatMessage } from "@sarchauhan/chat";
 
 export const SVG_CHART =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='80' viewBox='0 0 160 80'%3E%3Crect width='160' height='80' rx='10' fill='%2310a37f' fill-opacity='0.08'/%3E%3Crect x='18' y='44' width='22' height='24' rx='3' fill='%2310a37f'/%3E%3Crect x='48' y='32' width='22' height='36' rx='3' fill='%2310a37f' fill-opacity='0.72'/%3E%3Crect x='78' y='22' width='22' height='46' rx='3' fill='%2310a37f' fill-opacity='0.46'/%3E%3Crect x='108' y='12' width='22' height='56' rx='3' fill='%2310a37f' fill-opacity='0.24'/%3E%3C/svg%3E";
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='80' viewBox='0 0 160 80'%3E%3Crect width='160' height='80' rx='10' fill='%23c45d26' fill-opacity='0.08'/%3E%3Crect x='18' y='44' width='22' height='24' rx='3' fill='%23c45d26'/%3E%3Crect x='48' y='32' width='22' height='36' rx='3' fill='%23c45d26' fill-opacity='0.72'/%3E%3Crect x='78' y='22' width='22' height='46' rx='3' fill='%23c45d26' fill-opacity='0.46'/%3E%3Crect x='108' y='12' width='22' height='56' rx='3' fill='%23c45d26' fill-opacity='0.24'/%3E%3C/svg%3E";
 
 export const userReferenceText = [
   "Use the following selected references as context:",

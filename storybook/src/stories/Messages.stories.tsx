@@ -37,6 +37,7 @@ const meta: Meta<MessageStoryArgs> = {
 export default meta;
 
 export const AllParts: StoryObj<MessageStoryArgs> = {
+  name: "Tool chips and sources",
   args: {
     parts: richAssistantParts,
   },
