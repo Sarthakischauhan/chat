@@ -12,6 +12,7 @@ import {
   type AgentWidgetPart,
   type AgentWidgetProps,
 } from "@sarchauhan/protocol";
+import { ChevronDown } from "lucide-react";
 import { splitThinkingSegments } from "../../lib/message/segment";
 import { parseUserReferenceMessage } from "../../lib/message/user";
 import { cn } from "../../lib/utils";
@@ -38,6 +39,19 @@ const formatJson = (value: unknown) => {
   } catch {
     return String(value);
   }
+};
+
+const toolDetail = (part: AgentToolPart) => {
+  const source = part.output ?? part.input;
+
+  if (!source || typeof source !== "object" || Array.isArray(source)) {
+    return null;
+  }
+
+  const record = source as Record<string, unknown>;
+  const value = record.path ?? record.file ?? record.filename ?? record.query ?? record.command ?? record.url;
+
+  return typeof value === "string" && value.trim() ? value : null;
 };
 
 const toolStateLabel = (state: AgentToolPart["state"]) => {
@@ -80,10 +94,12 @@ const ToolBlock = ({ part }: { part: AgentToolPart }) => {
     part.state === "input-streaming" ||
     part.state === "input-available" ||
     part.state === "approval-requested";
+  const detail = toolDetail(part);
 
   return (
     <details className={`agent-tool ${isPending ? "agent-tool-pending" : "agent-tool-complete"}`} open={isPending}>
       <summary>
+        <ChevronDown className="agent-tool-chevron" aria-hidden="true" />
         <span className="agent-tool-dot" aria-hidden="true">
           {isPending ? (
             <span className="agent-tool-spinner" />
@@ -100,6 +116,7 @@ const ToolBlock = ({ part }: { part: AgentToolPart }) => {
           )}
         </span>
         <span className="agent-tool-name">{part.title ?? part.toolName}</span>
+        {detail ? <span className="agent-tool-chip">{detail}</span> : null}
         <span className="agent-tool-state">{toolStateLabel(part.state)}</span>
       </summary>
       <div className="agent-tool-body">

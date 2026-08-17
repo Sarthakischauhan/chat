@@ -11,6 +11,11 @@ const numberValue = (value: unknown) =>
 const stringValue = (value: unknown) =>
   typeof value === "string" ? value : "";
 
+const recordValue = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null;
+
 const parseValue = (value: unknown) => {
   if (typeof value !== "string") {
     return value;
@@ -21,6 +26,30 @@ const parseValue = (value: unknown) => {
   } catch {
     return value;
   }
+};
+
+const askUserProps = (value: unknown) => {
+  const input = recordValue(parseValue(value));
+  const rawChoices = parseValue(input?.choices ?? input?.options);
+  const choices = Array.isArray(rawChoices)
+    ? rawChoices.flatMap((choice) => {
+        if (typeof choice === "string") {
+          return choice;
+        }
+
+        const option = recordValue(choice);
+        const label = stringValue(option?.label ?? option?.name ?? option?.value);
+        const optionValue = stringValue(option?.value) || label;
+
+        return label ? [{ label, value: optionValue }] : [];
+      })
+    : [];
+
+  return {
+    prompt: stringValue(input?.question ?? input?.prompt),
+    options: choices,
+    default: stringValue(input?.default ?? input?.default_option),
+  };
 };
 
 async function* readSse(
@@ -61,6 +90,7 @@ export async function* normalizeSymphonyStream(
 ): AsyncGenerator<AgentEvent> {
   const textIds = new Set<string>();
   const reasoningIds = new Set<string>();
+  const askUserToolIds = new Set<string>();
 
   for await (const event of readSse(stream)) {
     const payload = event.payload;
@@ -107,6 +137,10 @@ export async function* normalizeSymphonyStream(
       }
 
       case "tool_call_started":
+        if (stringValue(payload.tool_name) === "ask_user") {
+          askUserToolIds.add(stringValue(payload.tool_call_id));
+          break;
+        }
         yield {
           type: "tool-input-start",
           toolCallId: stringValue(payload.tool_call_id),
@@ -115,6 +149,9 @@ export async function* normalizeSymphonyStream(
         break;
 
       case "tool_call_delta":
+        if (askUserToolIds.has(stringValue(payload.tool_call_id))) {
+          break;
+        }
         yield {
           type: "tool-input-delta",
           toolCallId: stringValue(payload.tool_call_id),
@@ -123,6 +160,18 @@ export async function* normalizeSymphonyStream(
         break;
 
       case "tool_execution_started":
+        if (askUserToolIds.has(stringValue(payload.tool_call_id))) {
+          yield {
+            type: "data-widget",
+            id: stringValue(payload.tool_call_id) || undefined,
+            data: {
+              name: "question",
+              props: askUserProps(payload.arguments),
+              interactive: true,
+            },
+          };
+          break;
+        }
         yield {
           type: "tool-input-available",
           toolCallId: stringValue(payload.tool_call_id),
@@ -132,6 +181,9 @@ export async function* normalizeSymphonyStream(
         break;
 
       case "tool_execution_completed":
+        if (askUserToolIds.has(stringValue(payload.tool_call_id))) {
+          break;
+        }
         yield {
           type: "tool-output-available",
           toolCallId: stringValue(payload.tool_call_id),

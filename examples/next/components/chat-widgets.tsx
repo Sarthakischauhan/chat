@@ -103,10 +103,8 @@ function MapWidget({
 
 export const exampleWidgets = [
   defineWidget<QuestionWidgetProps>("question", QuestionWidget, {
-    label: "Question",
+    label: "",
     title: (props) => (typeof props.prompt === "string" ? props.prompt : "Choose an option"),
-    status: (_props, widget) =>
-      widget.interactive && !widget.disabled ? "Awaiting input" : "Locked",
   }),
   defineWidget<MapWidgetProps>("map", MapWidget, {
     label: "Map",

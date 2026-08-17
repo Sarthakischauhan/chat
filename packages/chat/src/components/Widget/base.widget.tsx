@@ -24,10 +24,12 @@ export function BaseWidget({
     <section className={cn("chat-widget-card", className)} aria-label={label}>
       <header className="chat-widget-header">
         <div className="chat-widget-heading">
-          <div className="chat-widget-label-row">
-            <span className="chat-widget-status-dot" aria-hidden="true" />
-            <span className="chat-widget-label">{label}</span>
-          </div>
+          {label ? (
+            <div className="chat-widget-label-row">
+              <span className="chat-widget-status-dot" aria-hidden="true" />
+              <span className="chat-widget-label">{label}</span>
+            </div>
+          ) : null}
           <div className="chat-widget-title">{title}</div>
         </div>
         {status ? <div className="chat-widget-status">{status}</div> : null}

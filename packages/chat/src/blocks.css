@@ -14,11 +14,20 @@
 .agent-data > summary {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.15rem 0;
+  gap: 0.5rem;
+  padding: 0.32rem 0;
   cursor: pointer;
   list-style: none;
-  font-size: 0.86rem;
+  font-size: 0.9rem;
+  opacity: 0.76;
+  transition:
+    color var(--chat-transition),
+    opacity var(--chat-transition);
+}
+
+.agent-tool > summary:hover {
+  color: var(--chat-fg);
+  opacity: 1;
 }
 
 .agent-tool > summary::-webkit-details-marker,
@@ -34,6 +43,18 @@
   height: 1rem;
   flex: 0 0 auto;
   color: var(--chat-fg-muted);
+}
+
+.agent-tool-chevron {
+  width: 0.9rem;
+  height: 0.9rem;
+  flex: 0 0 auto;
+  opacity: 0.58;
+  transition: transform var(--chat-transition);
+}
+
+.agent-tool[open] .agent-tool-chevron {
+  transform: rotate(180deg);
 }
 
 .agent-tool-pending .agent-tool-dot {
@@ -89,21 +110,45 @@
   min-width: 0;
   overflow: hidden;
   color: inherit;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.8rem;
+  font-family: var(--chat-font-sans);
+  font-size: 0.95rem;
   font-weight: 500;
-  opacity: 0.78;
+  opacity: 1;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.agent-tool-chip {
+  min-width: 0;
+  max-width: min(100%, 22rem);
+  overflow: hidden;
+  padding: 0.28rem 0.55rem;
+  border-radius: calc(var(--chat-radius-lg) + 0.15rem);
+  background: var(--chat-control-bg);
+  color: var(--chat-fg-muted);
+  font-family: var(--chat-font-mono);
+  font-size: 0.82rem;
+  line-height: 1.15;
+  opacity: 0.9;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition:
+    background-color var(--chat-transition),
+    color var(--chat-transition);
+}
+
+.agent-tool > summary:hover .agent-tool-chip {
+  background: var(--chat-control-hover);
+  color: var(--chat-fg);
 }
 
 .agent-tool-state {
   margin-left: auto;
   color: inherit;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  opacity: 0.42;
+  opacity: 0.5;
   white-space: nowrap;
 }
 
@@ -118,7 +163,9 @@
 
 .agent-tool-body,
 .agent-data > pre {
+  margin-left: 1.25rem;
   padding: 0.55rem 0 0 1rem;
+  border-left: 1px solid var(--chat-border);
 }
 
 .agent-tool-section + .agent-tool-section {
@@ -143,7 +190,7 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.76rem;
   line-height: 1.55;
-  opacity: 0.7;
+  opacity: 0.72;
   white-space: pre-wrap;
   word-break: break-word;
 }
