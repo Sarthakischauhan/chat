@@ -14,7 +14,7 @@ type Context = {
   context_window: number;
 };
 
-const formatTokens = (value: number) => value.toLocaleString("en-US");
+const formatTokens = (value: number) => new Intl.NumberFormat("en-US").format(value);
 
 export function MessageUsage({ part }: { part: AgentDataPart }) {
   if (part.name === "usage") {

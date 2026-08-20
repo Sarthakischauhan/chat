@@ -12,14 +12,22 @@ type Context = {
   context_window?: number;
 };
 
-const formatTokens = (value: number) => value.toLocaleString("en-US");
+const formatTokens = (value: number) => new Intl.NumberFormat("en-US").format(value);
 const isTokenCount = (value: unknown): value is number =>
   typeof value === "number" && Number.isFinite(value);
+const getContextMetrics = (context: Context | undefined) => {
+  const currentTokens = context?.current_tokens;
+  const contextWindow = context?.context_window;
+
+  return isTokenCount(currentTokens) && isTokenCount(contextWindow)
+    ? { currentTokens, contextWindow }
+    : null;
+};
 
 export const MessageUsage = ({ parts }: { parts: AgentDataPart[] }) => {
   const usage = parts.find((part) => part.name === "usage")?.data as Usage | undefined;
   const context = parts.find((part) => part.name === "context")?.data as Context | undefined;
-  const hasContext = isTokenCount(context?.current_tokens) && isTokenCount(context?.context_window);
+  const contextMetrics = getContextMetrics(context);
   const tokenMetrics = usage
     ? [
         ["in", usage.input_tokens],
@@ -29,18 +37,18 @@ export const MessageUsage = ({ parts }: { parts: AgentDataPart[] }) => {
       ].filter((metric): metric is [string, number] => isTokenCount(metric[1]))
     : [];
 
-  if (!hasContext && tokenMetrics.length === 0) return null;
+  if (!contextMetrics && tokenMetrics.length === 0) return null;
 
   return (
     <p className="chat-message-usage" aria-label="Context and token usage">
-      {hasContext ? (
+      {contextMetrics ? (
         <>
-          Context {formatTokens(context.current_tokens)} / {formatTokens(context.context_window)} ({Math.round((context.current_tokens / context.context_window) * 100)}%)
+          Context {formatTokens(contextMetrics.currentTokens)} / {formatTokens(contextMetrics.contextWindow)} ({Math.round((contextMetrics.currentTokens / contextMetrics.contextWindow) * 100)}%)
         </>
       ) : null}
       {tokenMetrics.length > 0 ? (
         <>
-          {hasContext ? " · " : null}
+          {contextMetrics ? " · " : null}
           Tokens {tokenMetrics.map(([label, value]) => `${label} ${formatTokens(value)}`).join(" · ")}
         </>
       ) : null}
