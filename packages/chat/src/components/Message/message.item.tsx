@@ -2,19 +2,33 @@
 
 import { Pencil } from "lucide-react";
 import { useState } from "react";
+import { normalizeAgentParts, type AgentDataPart } from "@sarchauhan/protocol";
 import type { ChatMessage } from "../../types";
 import { getUserDisplayText } from "../../lib/message/user";
 import { useMessages } from "../Chat/context";
 import { MessageContent } from "../Message/message.content";
+import { MessageFeedback } from "../Message/message.feedback";
+import { MessageUsage } from "../Message/message.usage";
 
 const getMessageTargetId = (messageId: string) => `chat-message-${messageId}`;
 
 export const MessageItem = ({ message }: { message: ChatMessage }) => {
-  const { editAndResendMessage, isSending } = useMessages();
+  const { editAndResendMessage, isSending, messages } = useMessages();
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(() => getUserDisplayText(message));
   const [isSubmittingEdit, setIsSubmittingEdit] = useState(false);
   const isUser = message.role === "user";
+
+  const assistantText = message.parts
+    .filter((part) => part.type === "text")
+    .map((part) => ("text" in part ? String(part.text) : ""))
+    .join("\n")
+    .trim();
+  const dataParts = normalizeAgentParts(message.parts).filter(
+    (part): part is AgentDataPart => part.type === "data",
+  );
+
+  const previousUserMessage = [...messages].reverse().find((item) => item.role === "user");
 
   const cancelEdit = () => {
     setDraft(getUserDisplayText(message));
@@ -100,6 +114,20 @@ export const MessageItem = ({ message }: { message: ChatMessage }) => {
     <div className="chat-message chat-message-assistant">
       <div className="chat-message-assistant-inner">
         <MessageContent parts={message.parts} isUser={false} />
+        <MessageUsage parts={dataParts} />
+        <MessageFeedback
+          responseText={assistantText}
+          canRegenerate={!!previousUserMessage}
+          disabled={isSending}
+          onRegenerate={() => {
+            if (previousUserMessage) {
+              void editAndResendMessage(
+                previousUserMessage.id,
+                getUserDisplayText(previousUserMessage),
+              );
+            }
+          }}
+        />
       </div>
     </div>
   );

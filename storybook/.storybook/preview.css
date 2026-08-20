@@ -1,0 +1,37 @@
+:root {
+  --storybook-chat-surface-width: 48rem;
+  --storybook-chat-surface-height: 36rem;
+}
+
+.storybook-stage {
+  display: grid;
+  width: 100%;
+  min-height: 100vh;
+  place-items: center;
+  padding: 2rem;
+}
+
+.storybook-stage[data-surface="compact"] {
+  --storybook-chat-surface-width: 32rem;
+}
+
+.storybook-stage[data-surface="regular"] {
+  --storybook-chat-surface-width: 48rem;
+}
+
+.storybook-stage[data-surface="wide"] {
+  --storybook-chat-surface-width: 64rem;
+}
+
+.storybook-chat-surface {
+  width: var(--storybook-chat-surface-width);
+  max-width: calc(100vw - 2rem);
+  height: min(70vh, var(--storybook-chat-surface-height));
+  min-height: 32rem;
+  box-sizing: border-box;
+}
+
+.storybook-story-content {
+  width: min(100%, var(--chat-column));
+  margin: 0 auto;
+}

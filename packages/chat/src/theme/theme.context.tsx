@@ -49,23 +49,24 @@ export function ThemeProvider({
   onThemeChange,
   storageKey = STORAGE_KEY,
 }: ThemeProviderProps) {
-  const [uncontrolledTheme, setUncontrolledTheme] = useState<ChatTheme>(() => {
-    if (typeof window === "undefined") {
-      return defaultTheme;
+  const [uncontrolledTheme, setUncontrolledTheme] =
+    useState<ChatTheme>(defaultTheme);
+
+  const theme = controlledTheme ?? uncontrolledTheme;
+  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">(
+    theme === "dark" ? "dark" : "light",
+  );
+
+  useEffect(() => {
+    if (controlledTheme !== undefined) {
+      return;
     }
 
     const stored = window.localStorage.getItem(storageKey);
     if (stored === "light" || stored === "dark" || stored === "system") {
-      return stored;
+      setUncontrolledTheme(stored);
     }
-
-    return defaultTheme;
-  });
-
-  const theme = controlledTheme ?? uncontrolledTheme;
-  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">(() =>
-    resolveTheme(theme),
-  );
+  }, [controlledTheme, storageKey]);
 
   useEffect(() => {
     setResolvedTheme(resolveTheme(theme));

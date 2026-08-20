@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MessageRole {
+  user
+  assistant
+  system
+}
+
+model Thread {
+  id              String           @id @default(cuid())
+  title           String           @default("New chat")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  archivedAt      DateTime?
+  messages        Message[]
+  idempotencyKeys IdempotencyKey[]
+
+  @@index([updatedAt])
+}
+
+model Message {
+  id        String      @id
+  threadId  String
+  role      MessageRole
+  payload   Json
+  provider  String?
+  model     String?
+  sequence  Int
+  createdAt DateTime    @default(now())
+  thread    Thread      @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@unique([threadId, sequence])
+  @@index([threadId, createdAt])
+}
+
+model IdempotencyKey {
+  key         String    @id
+  scope       String
+  tenantId    String?
+  userId      String?
+  threadId    String?
+  responseRef String?
+  firstSeenAt DateTime  @default(now())
+  thread      Thread?   @relation(fields: [threadId], references: [id], onDelete: SetNull)
+
+  @@index([threadId])
+}

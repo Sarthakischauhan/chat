@@ -8,6 +8,7 @@ import { ThemeProvider, useTheme, type ChatTheme } from "../theme/theme.context"
 import { ThemeToggle } from "../theme/theme.toggle";
 import { ChatComposer } from "./Chat/chat";
 import { ChatContextProvider, useMessages } from "./Chat/chat.context";
+import { ProviderId } from "./Chat/context";
 import { useThread } from "./Chat/context";
 import { Message } from "./Message/message";
 import {
@@ -21,6 +22,7 @@ type ChatProps = {
   adapter: ChatAdapter;
   className?: string;
   defaultThreadId?: string;
+  defaultProvider?: ProviderId;
   registryUrl?: string;
   style?: CSSProperties;
   /** Widget map or defineWidget(...) array. */
@@ -30,6 +32,7 @@ type ChatProps = {
   defaultTheme?: ChatTheme;
   onThemeChange?: (theme: ChatTheme) => void;
   showThemeToggle?: boolean;
+  showModelSelector?: boolean;
 };
 
 function ChatShell({
@@ -37,11 +40,13 @@ function ChatShell({
   style,
   widgets,
   showThemeToggle = true,
+  showModelSelector = true,
 }: {
   className?: string;
   style?: CSSProperties;
   widgets?: ChatWidgetInput;
   showThemeToggle?: boolean;
+  showModelSelector?: boolean;
 }) {
   const { sendMessage, isSending, messages, status } = useMessages();
   const { createThread } = useThread();
@@ -126,7 +131,7 @@ function ChatShell({
           <Message />
         </div>
         <div className="chat-composer">
-          <ChatComposer />
+          <ChatComposer showModelSelector={showModelSelector} />
         </div>
       </div>
     </WidgetProvider>
@@ -137,6 +142,7 @@ export function Chat({
   adapter,
   className,
   defaultThreadId,
+  defaultProvider,
   registryUrl,
   style,
   widgets,
@@ -144,6 +150,7 @@ export function Chat({
   defaultTheme = "system",
   onThemeChange,
   showThemeToggle = true,
+  showModelSelector = true,
 }: ChatProps) {
   return (
     <ThemeProvider
@@ -151,12 +158,18 @@ export function Chat({
       defaultTheme={defaultTheme}
       onThemeChange={onThemeChange}
     >
-      <ChatContextProvider adapter={adapter} defaultThreadId={defaultThreadId} registryUrl={registryUrl}>
+      <ChatContextProvider
+        adapter={adapter}
+        defaultThreadId={defaultThreadId}
+        defaultProvider={defaultProvider}
+        registryUrl={registryUrl}
+      >
         <ChatShell
           className={className}
           style={style}
           widgets={widgets}
           showThemeToggle={showThemeToggle}
+          showModelSelector={showModelSelector}
         />
       </ChatContextProvider>
     </ThemeProvider>

@@ -1,128 +1,113 @@
 
-@keyframes thinking-stream {
-  0% {
-    background-position: 200% 0;
-  }
-
-  100% {
-    background-position: 0% 0;
-  }
-}
-
-@keyframes thinking-dots {
-  0% {
-    width: 0;
-  }
-
-  100% {
-    width: 1.5em;
-  }
-}
-
 @layer components {
   .md-thinking {
-    @reference my-3;
+    margin: 0.75rem 0;
   }
 
   .md-thinking > summary {
-    @reference inline-flex items-center gap-2 py-1 text-sm font-medium text-muted-foreground transition-colors;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--chat-fg-muted);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.25;
     list-style: none;
+    transition: color 160ms ease;
+  }
+
+  .md-thinking-complete > summary {
+    cursor: pointer;
+    opacity: 0.72;
+  }
+
+  .md-thinking-complete > summary:hover {
+    color: var(--chat-fg);
   }
 
   .md-thinking > summary::-webkit-details-marker {
     display: none;
   }
 
-  .md-thinking > summary::before {
-    @reference inline-block h-[0.8rem] w-[0.8rem] shrink-0 text-muted-foreground/70 transition-transform duration-200;
-    content: "";
-    background-color: currentColor;
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M4.5 2.5L8 6l-3.5 3.5' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M4.5 2.5L8 6l-3.5 3.5' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-    mask-position: center;
-    -webkit-mask-size: contain;
-    mask-size: contain;
-  }
-
   .md-thinking-label {
-    @reference tracking-tight;
+    display: block;
+    font-size: inherit;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
   }
 
-  .md-thinking-indicator {
-    @reference hidden;
+  .md-thinking-sparkle {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+    stroke-width: 1.8;
   }
 
-  .md-thinking-indicator-pending {
-    @reference hidden;
+  .md-thinking-chevron {
+    width: 0.85rem;
+    height: 0.85rem;
+    opacity: 0.65;
+    transition: transform 160ms ease;
   }
 
-  .md-thinking-complete > summary {
-    @reference cursor-pointer;
-  }
-
-  .md-thinking-pending > summary {
-    @reference cursor-default;
+  .md-thinking-complete[open] .md-thinking-chevron {
+    transform: rotate(180deg);
   }
 
   .md-thinking[open] > summary {
-    @reference text-foreground/80;
-  }
-
-  .md-thinking[open] > summary::before {
-    transform: rotate(90deg);
-  }
-
-  .md-thinking-body {
-    @reference mt-2 pl-4 text-sm leading-6 text-muted-foreground;
-    opacity: 0.72;
-  }
-
-  .md-thinking-body > :first-child {
-    @reference mt-0;
-  }
-
-  .md-thinking-body > :last-child {
-    @reference mb-0;
+    color: var(--chat-fg);
   }
 
   .md-thinking-pending > summary {
-    color: color-mix(in oklab, var(--foreground) 58%, var(--muted-foreground));
+    cursor: default;
   }
 
-  .md-thinking-pending > summary .md-thinking-label {
-    background-image: linear-gradient(
-      90deg,
-      color-mix(in oklab, var(--muted-foreground) 92%, transparent) 0%,
-      color-mix(in oklab, var(--foreground) 55%, transparent) 45%,
-      color-mix(in oklab, var(--muted-foreground) 92%, transparent) 100%
-    );
-    background-size: 200% 100%;
-    background-position: 200% 0;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: thinking-stream 1.8s linear infinite;
+  .md-thinking-body {
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--chat-border);
+    color: var(--chat-fg-muted);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    opacity: 0.62;
   }
 
-  .md-thinking-pending > summary .md-thinking-label::after {
-    display: inline-block;
-    width: 0;
-    overflow: hidden;
-    vertical-align: bottom;
-    content: "...";
-    animation: thinking-dots 1.2s steps(4, end) infinite;
+  .md-thinking-body > :first-child {
+    margin-top: 0;
   }
 
-  .md-thinking-pending .md-thinking-body {
-    color: color-mix(in oklab, var(--chat-fg-muted, var(--muted-foreground)) 88%, var(--chat-fg, var(--foreground)) 12%);
+  .md-thinking-body > :last-child {
+    margin-bottom: 0;
+  }
+
+  .chat-message-content .md-thinking > summary,
+  .chat-message-content .md-thinking > summary .md-thinking-label {
+    font-family: var(--chat-font-sans);
   }
 
   .md-content-assistant,
   .md-content-user {
     color: inherit;
+  }
+
+  .md-inline-code {
+    display: inline;
+    padding: 0.125rem 0.375rem;
+    border: 0.5px solid var(--chat-border);
+    border-radius: var(--chat-radius-sm);
+    background: var(--chat-control-bg);
+    color: var(--chat-fg);
+    font-family: var(--chat-font-mono);
+    font-size: 0.85em;
+    line-height: 1.35;
+    white-space: normal;
+  }
+
+  .chat-code-markdown {
+    border: 0.5px solid var(--chat-border) !important;
+    border-radius: var(--chat-radius-md) !important;
+    box-shadow: none !important;
   }
 
   .md-content pre code.hljs {
@@ -166,4 +151,14 @@
   .md-content .hljs-variable {
     color: #dcdcaa;
   }
+}
+
+.chat-message-content .md-thinking > summary,
+.chat-message-content .md-thinking > summary .md-thinking-label {
+  font-family: var(--chat-font-sans);
+}
+
+.chat-message-content .md-thinking-label {
+  font-size: 1rem;
+  font-weight: 500;
 }

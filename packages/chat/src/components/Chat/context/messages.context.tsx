@@ -10,6 +10,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { flushSync } from "react-dom";
 import type { ChatAdapter, ChatMessage, ChatStatus } from "../../../types";
 import { getUserDisplayText } from "../../../lib/message/user";
 import {
@@ -21,10 +22,27 @@ import { useModel } from "./model.context";
 import { useThread } from "./thread.context";
 import type { SendMessage } from "./types";
 
+const MINIMUM_RESPONSE_LOADING_MS = 350;
+const wait = (milliseconds: number) => new Promise<void>((resolve) => window.setTimeout(resolve, milliseconds));
+
+const hasVisibleAssistantContent = (message: ChatMessage) =>
+  message.parts.some((part) => {
+    if (part.type === "text") {
+      return "text" in part && typeof part.text === "string" && part.text.trim().length > 0;
+    }
+
+    if (part.type === "data") {
+      return "name" in part && part.name !== "usage" && part.name !== "context" && part.name !== "context-warning";
+    }
+
+    return ["reasoning", "tool", "widget", "source-url", "source-document", "file", "unknown"].includes(part.type);
+  });
+
 type MessagesContextValue = {
   messages: ChatMessage[];
   status: ChatStatus;
   isSending: boolean;
+  isWaitingForResponse: boolean;
   sendMessage: SendMessage;
   editAndResendMessage: (messageId: string, text: string) => Promise<void>;
   stopResponse: () => void;
@@ -43,6 +61,7 @@ export function MessagesProvider({ adapter, children }: MessagesProviderProps) {
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [status, setStatus] = useState<ChatStatus>("ready");
+  const [isWaitingForResponse, setIsWaitingForResponse] = useState(false);
 
   const messagesRef = useRef(messages);
   const statusRef = useRef(status);
@@ -106,6 +125,7 @@ export function MessagesProvider({ adapter, children }: MessagesProviderProps) {
     }) => {
       const threadId = activeThreadIdRef.current;
       if (!threadId) {
+        setIsWaitingForResponse(false);
         return;
       }
 
@@ -113,6 +133,8 @@ export function MessagesProvider({ adapter, children }: MessagesProviderProps) {
       const abortController = new AbortController();
       abortRef.current = abortController;
       setStatus("submitted");
+      const responseStartedAt = Date.now();
+      let receivedVisibleResponse = false;
 
       try {
         for await (const assistantMessage of adapterRef.current.sendMessage({
@@ -123,12 +145,31 @@ export function MessagesProvider({ adapter, children }: MessagesProviderProps) {
           model,
           signal: abortController.signal,
         })) {
-          setStatus("streaming");
+          if (!receivedVisibleResponse && hasVisibleAssistantContent(assistantMessage)) {
+            receivedVisibleResponse = true;
+            const remaining = MINIMUM_RESPONSE_LOADING_MS - (Date.now() - responseStartedAt);
+
+            if (remaining > 0) {
+              await wait(remaining);
+            }
+
+            if (abortController.signal.aborted) {
+              setIsWaitingForResponse(false);
+              setStatus("ready");
+              return;
+            }
+          }
+
+          if (receivedVisibleResponse) {
+            setIsWaitingForResponse(false);
+            setStatus("streaming");
+          }
           setMessages((current) => upsertAssistantMessage(current, assistantMessage));
         }
 
         setStatus("ready");
       } catch (error) {
+        setIsWaitingForResponse(false);
         if (abortController.signal.aborted) {
           setStatus("ready");
           return;
@@ -137,6 +178,7 @@ export function MessagesProvider({ adapter, children }: MessagesProviderProps) {
         setStatus("error");
         throw error;
       } finally {
+        setIsWaitingForResponse(false);
         if (abortRef.current === abortController) {
           abortRef.current = null;
         }
@@ -156,7 +198,10 @@ export function MessagesProvider({ adapter, children }: MessagesProviderProps) {
 
       const userMessage = createUserMessage(text);
       const nextMessages = [...messagesRef.current, userMessage];
-      setMessages(nextMessages);
+      flushSync(() => {
+        setMessages(nextMessages);
+        setIsWaitingForResponse(true);
+      });
 
       await streamMessage({
         message: userMessage,
@@ -224,6 +269,7 @@ export function MessagesProvider({ adapter, children }: MessagesProviderProps) {
           updateMessageText(message, trimmedText);
 
         setMessages(editedMessages);
+        setIsWaitingForResponse(true);
 
         await streamMessage({
           message: editedMessage,
@@ -232,6 +278,7 @@ export function MessagesProvider({ adapter, children }: MessagesProviderProps) {
           model: modelRef.current,
         });
       } catch (error) {
+        setIsWaitingForResponse(false);
         setMessages(previousMessages);
         throw error;
       }
@@ -247,6 +294,7 @@ export function MessagesProvider({ adapter, children }: MessagesProviderProps) {
     }
 
     abortRef.current?.abort();
+    setIsWaitingForResponse(false);
     setStatus("ready");
   }, []);
 
@@ -257,11 +305,12 @@ export function MessagesProvider({ adapter, children }: MessagesProviderProps) {
       messages,
       status,
       isSending,
+      isWaitingForResponse,
       sendMessage,
       editAndResendMessage,
       stopResponse,
     }),
-    [editAndResendMessage, isSending, messages, sendMessage, status, stopResponse],
+    [editAndResendMessage, isSending, isWaitingForResponse, messages, sendMessage, status, stopResponse],
   );
 
   return <MessagesContext.Provider value={value}>{children}</MessagesContext.Provider>;

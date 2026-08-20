@@ -30,7 +30,7 @@ const upsertTextLike = (
     ids.get(id) ??
     parts.findIndex((part) => part.type === type && part.state === "streaming");
 
-  if (existingIndex === undefined) {
+  if (existingIndex === -1) {
     const next = update("");
     const part: AgentPart =
       type === "text"

@@ -1,10 +1,11 @@
 import { Children, isValidElement, type ComponentPropsWithoutRef } from "react";
-import { CodeMarkdown, type SupportedLanguage } from "@sarchauhan/code-markdown";
+import { CodeMarkdown, type CodeTheme, type SupportedLanguage } from "@sarchauhan/code-markdown";
 import ReactMarkdown from "react-markdown";
 import type { PluggableList } from "unified";
 import remarkGfm from "remark-gfm";
 
 import { cn } from "../../lib/utils";
+import { useTheme } from "../../theme/theme.context";
 
 const markdownPlugins: { remark: PluggableList; rehype: PluggableList } = {
   remark: [remarkGfm],
@@ -26,6 +27,78 @@ const getTextContent = (value: unknown): string => {
   }
 
   return "";
+};
+
+const chatCodeThemes: Record<"light" | "dark", CodeTheme> = {
+  light: {
+    name: "chat-light",
+    shikiTheme: "github-light",
+    colors: {
+      background: "#ffffff",
+      foreground: "#0d0d0d",
+      comment: "#6e6e80",
+      keyword: "#9b174c",
+      string: "#166534",
+      function: "#1d4ed8",
+      variable: "#0d0d0d",
+      number: "#7c3aed",
+      operator: "#9b174c",
+      punctuation: "#6e6e80",
+      type: "#0369a1",
+      tag: "#166534",
+      attribute: "#1d4ed8",
+      constant: "#b45309",
+      surface: "#f7f7f8",
+      overlay: "#d8d8df",
+      subtext: "#6e6e80",
+    },
+  },
+  dark: {
+    name: "chat-dark",
+    shikiTheme: "github-dark",
+    colors: {
+      background: "#212121",
+      foreground: "#ececec",
+      comment: "#8f8f8f",
+      keyword: "#ff7b72",
+      string: "#a5d6a7",
+      function: "#79c0ff",
+      variable: "#ececec",
+      number: "#d2a8ff",
+      operator: "#ff7b72",
+      punctuation: "#b4b4b4",
+      type: "#79c0ff",
+      tag: "#7ee787",
+      attribute: "#79c0ff",
+      constant: "#ffa657",
+      surface: "#2f2f2f",
+      overlay: "#454545",
+      subtext: "#b4b4b4",
+    },
+  },
+};
+
+const MarkdownCodeBlock = ({
+  code,
+  language,
+}: {
+  code: string;
+  language: SupportedLanguage;
+}) => {
+  const { resolvedTheme } = useTheme();
+
+  return (
+    <CodeMarkdown
+      className="chat-code-markdown"
+      language={language}
+      theme={chatCodeThemes[resolvedTheme]}
+      showCopyButton
+      showLineNumbers
+      showLanguage
+    >
+      {code}
+    </CodeMarkdown>
+  );
 };
 
 const markdownComponents = {
@@ -112,45 +185,22 @@ const markdownComponents = {
 
       return (
         <div className={cn("my-5", className)}>
-          <CodeMarkdown
+          <MarkdownCodeBlock
             language={getCodeLanguage(codeClassName)}
-            theme="anysphere"
-            showCopyButton
-            showLineNumbers
-            showLanguage
-          >
-            {code.replace(/\n$/, "")}
-          </CodeMarkdown>
+            code={code.replace(/\n$/, "")}
+          />
         </div>
       );
     })()
   ),
-  code: ({
-    inline,
-    className,
-    children,
-    ...props
-  }: ComponentPropsWithoutRef<"code"> & { inline?: boolean }) => {
-    if (inline) {
-      return (
-        <code
-          className={cn(
-            "rounded-md border border-border/60 bg-muted/70 px-1.5 py-0.5 font-mono text-[0.85em] text-foreground",
-            className,
-          )}
-          {...props}
-        >
-          {children}
-        </code>
-      );
-    }
-
-    return (
-      <code className={cn("block min-w-full whitespace-pre font-mono text-inherit", className)} {...props}>
-        {children}
-      </code>
-    );
-  },
+  // React Markdown v10 no longer consistently provides the legacy `inline`
+  // prop. Fenced code is handled by the custom `pre` renderer above, so a
+  // standalone `code` element should always be rendered as inline code.
+  code: ({ className, children, ...props }: ComponentPropsWithoutRef<"code">) => (
+    <code className={cn("md-inline-code", className)} {...props}>
+      {children}
+    </code>
+  ),
 };
 
 type MarkdownContentProps = {

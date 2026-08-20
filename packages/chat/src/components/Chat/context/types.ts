@@ -1,6 +1,7 @@
 import type { ChatAdapter, ChatMessage, ChatStatus, ChatThread } from "../../../types";
 
 export enum ProviderId {
+  SYMPHONY = "symphony",
   MOCK = "mock",
   OPENAI = "openai",
   GOOGLE = "google",
@@ -42,6 +43,12 @@ export type { ChatAdapter, ChatMessage, ChatStatus, ChatThread };
 export const defaultRegistry: RegistryConfig = {
   defaultProviderId: ProviderId.MOCK,
   providers: [
+    {
+      id: ProviderId.SYMPHONY,
+      label: "Symphony (custom harness)",
+      defaultModel: "",
+      models: [],
+    },
     {
       id: ProviderId.MOCK,
       label: "Mock",
