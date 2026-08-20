@@ -12,9 +12,13 @@
     "storybook"
   ],
   "scripts": {
-    "dev": "next dev examples/next",
+    "dev": "next dev examples/next-symphony",
+    "dev:ai-sdk": "next dev examples/next-ai-sdk",
     "storybook": "npm run dev -w @sarchauhan/storybook",
-    "build": "next build examples/next",
+    "build": "next build examples/next-symphony",
+    "build:ai-sdk-example": "next build examples/next-ai-sdk",
+    "prebuild": "npm run build:chat",
+    "prebuild:ai-sdk-example": "npm run build:chat && npm run build:ai-sdk",
     "build:protocol": "npm run build -w @sarchauhan/protocol",
     "build:adapter": "npm run build -w @sarchauhan/protocol && npm run build -w @sarchauhan/adapter",
     "build:ai-sdk": "npm run build -w @sarchauhan/protocol && npm run build -w @sarchauhan/adapter && npm run build -w @sarchauhan/adapter-ai-sdk",
@@ -22,10 +26,11 @@
     "build:chat-tui": "npm run build -w @sarchauhan/protocol && npm run build -w @sarchauhan/adapter && npm run build -w @sarchauhan/chat-tui",
     "tui": "npm run demo -w @sarchauhan/example-tui",
     "tui:remote": "npm run remote -w @sarchauhan/example-tui",
-    "start": "next start examples/next",
+    "start": "next start examples/next-symphony",
+    "start:ai-sdk": "next start examples/next-ai-sdk",
     "lint": "eslint",
-    "prisma:generate": "prisma generate --schema examples/next/prisma/schema.prisma",
-    "prisma:push": "prisma db push --schema examples/next/prisma/schema.prisma"
+    "prisma:generate": "prisma generate --schema examples/next-symphony/prisma/schema.prisma",
+    "prisma:push": "prisma db push --schema examples/next-symphony/prisma/schema.prisma"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.44",
