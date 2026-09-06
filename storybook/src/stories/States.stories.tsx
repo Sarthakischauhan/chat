@@ -38,7 +38,7 @@ export const ThinkingPending: StoryObj = {
 };
 
 export const ToolChips: StoryObj = {
-  name: "Tool chips",
+  name: "Tools",
   render: () => (
     <MessageContent
       parts={[

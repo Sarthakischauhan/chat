@@ -1,9 +1,9 @@
 /**
  * Chat design tokens.
  *
- * Inspired by ChatGPT-style conversation psychology:
- * calm neutrals, clear turn-taking, soft elevation, and
- * a reading-width column that keeps focus on the dialogue.
+ * ChatGPT-inspired reading column: calm neutrals, clear turn-taking,
+ * content first. Hierarchy comes from type and spacing; color only
+ * marks real state (streaming, approval, error). Chrome stays quiet.
  */
 
 .chat-root,
@@ -29,8 +29,8 @@
   --chat-overlay: rgba(247, 247, 248, 0.92);
   --chat-composer-bg: #ffffff;
   --chat-composer-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.05),
-    0 8px 24px rgba(0, 0, 0, 0.06);
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 4px 16px rgba(0, 0, 0, 0.04);
   --chat-control-bg: rgba(0, 0, 0, 0.04);
   --chat-control-hover: rgba(0, 0, 0, 0.07);
   --chat-primary: #0d0d0d;
@@ -85,8 +85,8 @@
   --chat-overlay: rgba(33, 33, 33, 0.92);
   --chat-composer-bg: #2f2f2f;
   --chat-composer-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.06),
-    0 12px 32px rgba(0, 0, 0, 0.35);
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 6px 18px rgba(0, 0, 0, 0.22);
   --chat-control-bg: rgba(255, 255, 255, 0.06);
   --chat-control-hover: rgba(255, 255, 255, 0.1);
   --chat-primary: #ececec;
@@ -117,8 +117,8 @@
     --chat-overlay: rgba(33, 33, 33, 0.92);
     --chat-composer-bg: #2f2f2f;
     --chat-composer-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.06),
-      0 12px 32px rgba(0, 0, 0, 0.35);
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 6px 18px rgba(0, 0, 0, 0.22);
     --chat-control-bg: rgba(255, 255, 255, 0.06);
     --chat-control-hover: rgba(255, 255, 255, 0.1);
     --chat-primary: #ececec;

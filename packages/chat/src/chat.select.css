@@ -46,12 +46,10 @@
   align-items: center;
   gap: var(--chat-space-2, 0.5rem);
   color: var(--chat-fg-subtle, #8e8ea0);
-  font-size: 0.6875rem;
-  font-weight: 650;
-  letter-spacing: 0.08em;
+  font-size: var(--chat-text-xs, 0.75rem);
+  font-weight: 550;
   line-height: 1.25;
   padding: 0.45rem 0.5rem 0.25rem;
-  text-transform: uppercase;
 }
 
 .chat-model-provider-logo {

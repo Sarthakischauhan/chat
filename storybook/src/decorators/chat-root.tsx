@@ -46,7 +46,7 @@ export const withChatRoot: Decorator = (Story, context) => {
   const hasChatSurface = context.parameters.chatSurface !== false;
 
   return (
-    <div className="storybook-stage" data-surface={surface}>
+    <div className="storybook-stage" data-surface={surface} data-theme={theme}>
       <ThemeProvider theme={theme}>
         {hasChatSurface ? (
           <ChatContextProvider adapter={storyAdapter} registryUrl={noRegistryUrl}>

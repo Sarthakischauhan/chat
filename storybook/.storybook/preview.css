@@ -9,6 +9,13 @@
   min-height: 100vh;
   place-items: center;
   padding: 2rem;
+  background: #f7f7f8;
+  color: #0d0d0d;
+}
+
+.storybook-stage[data-theme="dark"] {
+  background: #212121;
+  color: #ececec;
 }
 
 .storybook-stage[data-surface="compact"] {

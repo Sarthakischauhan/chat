@@ -6,7 +6,7 @@
 
 .agent-tool,
 .agent-data {
-  margin: 0.35rem 0;
+  margin: 0;
   color: inherit;
 }
 
@@ -58,11 +58,11 @@
 }
 
 .agent-tool-pending .agent-tool-dot {
-  color: color-mix(in oklab, var(--chat-warning) 64%, currentColor);
+  color: color-mix(in oklab, var(--chat-warning) 70%, currentColor);
 }
 
 .agent-tool-complete .agent-tool-dot {
-  color: color-mix(in oklab, var(--chat-success) 48%, currentColor);
+  color: var(--chat-fg-muted);
 }
 
 .agent-tool-spinner {
@@ -97,8 +97,8 @@
   background: currentColor;
   opacity: 0.3;
   transition:
-    opacity 160ms ease,
-    transform 160ms ease;
+    opacity var(--chat-transition),
+    transform var(--chat-transition);
 }
 
 .agent-data[open] > summary::before {
@@ -111,9 +111,8 @@
   overflow: hidden;
   color: inherit;
   font-family: var(--chat-font-sans);
-  font-size: 0.95rem;
+  font-size: var(--chat-text);
   font-weight: 500;
-  opacity: 1;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -122,43 +121,28 @@
   min-width: 0;
   max-width: min(100%, 22rem);
   overflow: hidden;
-  padding: 0.28rem 0.55rem;
-  border-radius: calc(var(--chat-radius-lg) + 0.15rem);
-  background: var(--chat-control-bg);
   color: var(--chat-fg-muted);
   font-family: var(--chat-font-mono);
-  font-size: 0.82rem;
-  line-height: 1.15;
-  opacity: 0.9;
+  font-size: var(--chat-text-sm);
+  line-height: 1.3;
   text-overflow: ellipsis;
   white-space: nowrap;
-  transition:
-    background-color var(--chat-transition),
-    color var(--chat-transition);
-}
-
-.agent-tool > summary:hover .agent-tool-chip {
-  background: var(--chat-control-hover);
-  color: var(--chat-fg);
 }
 
 .agent-tool-state {
   margin-left: auto;
-  color: inherit;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  opacity: 0.5;
+  color: var(--chat-fg-muted);
+  font-size: var(--chat-text-sm);
+  font-weight: 500;
   white-space: nowrap;
 }
 
 .agent-tool-pending .agent-tool-state {
-  color: color-mix(in oklab, var(--chat-warning) 54%, currentColor);
-  opacity: 0.8;
+  color: color-mix(in oklab, var(--chat-warning) 62%, currentColor);
 }
 
 .agent-tool-complete .agent-tool-state {
-  color: color-mix(in oklab, var(--chat-success) 42%, currentColor);
+  color: var(--chat-fg-subtle);
 }
 
 .agent-tool-error .agent-tool-dot,
@@ -183,12 +167,9 @@
 
 .agent-tool-section-label {
   margin-bottom: 0.28rem;
-  color: inherit;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  opacity: 0.38;
-  text-transform: uppercase;
+  color: var(--chat-fg-muted);
+  font-size: var(--chat-text-xs);
+  font-weight: 500;
 }
 
 .agent-tool-code {
@@ -223,25 +204,21 @@
 
 .agent-source:hover,
 .agent-file:hover {
-  color: color-mix(in oklab, var(--chat-accent) 45%, currentColor);
+  color: var(--chat-fg);
 }
 
 .agent-source-label {
-  color: inherit;
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  opacity: 0.38;
-  text-transform: uppercase;
+  color: var(--chat-fg-subtle);
+  font-size: var(--chat-text-xs);
+  font-weight: 500;
 }
 
 .agent-source-title {
   overflow: hidden;
   color: inherit;
-  font-size: 0.875rem;
+  font-size: var(--chat-text-sm);
   font-weight: 500;
   line-height: 1.45;
-  opacity: 0.82;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
