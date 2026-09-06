@@ -5,7 +5,7 @@ import { useComposer, useMessages } from "./context";
 
 export const ChatSend = () => {
   const { canSend, submitInput } = useComposer();
-  const { status, stopResponse, isSending } = useMessages();
+  const { stopResponse, isSending } = useMessages();
 
   return (
     <button

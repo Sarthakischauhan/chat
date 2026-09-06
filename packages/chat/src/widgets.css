@@ -39,7 +39,7 @@
   height: 0.38rem;
   flex: 0 0 auto;
   border-radius: 999px;
-  background: var(--chat-accent, #10a37f);
+  background: var(--chat-accent);
   opacity: 0.72;
 }
 
@@ -97,10 +97,10 @@
   line-height: 1.35;
   text-align: left;
   transition:
-    color 160ms ease,
-    opacity 160ms ease,
-    background-color 160ms ease,
-    transform 160ms ease;
+    color var(--chat-transition),
+    opacity var(--chat-transition),
+    background-color var(--chat-transition),
+    transform var(--chat-transition);
 }
 
 .chat-widget-option::before {
@@ -112,9 +112,9 @@
   content: "";
   opacity: 0.45;
   transition:
-    border-color 160ms ease,
-    box-shadow 160ms ease,
-    transform 160ms ease;
+    border-color var(--chat-transition),
+    box-shadow var(--chat-transition),
+    transform var(--chat-transition);
 }
 
 .chat-widget-option:hover:not(:disabled) {
@@ -124,7 +124,7 @@
 }
 
 .chat-widget-option:focus-visible {
-  outline: 2px solid color-mix(in oklab, var(--chat-accent, #10a37f) 55%, transparent);
+  outline: 2px solid color-mix(in oklab, var(--chat-accent) 55%, transparent);
   outline-offset: 3px;
 }
 
@@ -134,13 +134,13 @@
 }
 
 .chat-widget-option[data-selected="true"] {
-  color: color-mix(in oklab, var(--chat-accent, #10a37f) 60%, currentColor);
-  background: color-mix(in oklab, var(--chat-accent, #10a37f) 10%, transparent);
+  color: color-mix(in oklab, var(--chat-accent) 60%, currentColor);
+  background: color-mix(in oklab, var(--chat-accent) 10%, transparent);
 }
 
 .chat-widget-option[data-selected="true"]::before {
-  border-color: var(--chat-accent, #10a37f);
-  box-shadow: inset 0 0 0 3px var(--chat-bg), inset 0 0 0 6px var(--chat-accent, #10a37f);
+  border-color: var(--chat-accent);
+  box-shadow: inset 0 0 0 3px var(--chat-bg), inset 0 0 0 6px var(--chat-accent);
   opacity: 1;
   transform: scale(1.06);
 }
@@ -190,7 +190,7 @@
 
 .chat-widget-meta a:hover,
 .chat-widget-inline-meta a:hover {
-  color: color-mix(in oklab, var(--chat-accent, #10a37f) 45%, currentColor);
+  color: color-mix(in oklab, var(--chat-accent) 45%, currentColor);
   opacity: 1;
 }
 
@@ -224,7 +224,7 @@
   height: 1.8rem;
   place-items: center;
   border-radius: 999px;
-  color: var(--chat-accent, #10a37f);
+  color: var(--chat-accent);
   opacity: 0.84;
   transform: translate(-50%, -50%);
   pointer-events: none;

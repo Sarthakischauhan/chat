@@ -16,11 +16,22 @@ export const Loading: StoryObj = {
 };
 
 export const Thinking: StoryObj = {
-  name: "Thinking",
+  name: "Thinking complete",
   render: () => (
     <ThinkingBlock isComplete elapsedMs={4_000}>
       <div className="md-thinking-body">
         The response trace remains available without taking focus away from the conversation.
+      </div>
+    </ThinkingBlock>
+  ),
+};
+
+export const ThinkingPending: StoryObj = {
+  name: "Thinking",
+  render: () => (
+    <ThinkingBlock isComplete={false}>
+      <div className="md-thinking-body">
+        Parsing the incoming stream and mapping parts…
       </div>
     </ThinkingBlock>
   ),
@@ -47,6 +58,64 @@ export const ToolChips: StoryObj = {
           state: "input-streaming",
           title: "Search references",
           input: { query: "modern conversational interface patterns" },
+        },
+        {
+          type: "tool",
+          toolName: "run_command",
+          toolCallId: "storybook-tool-3",
+          state: "approval-requested",
+          title: "Run command",
+          input: { command: "bun run build:chat" },
+        },
+        {
+          type: "tool",
+          toolName: "read_file",
+          toolCallId: "storybook-tool-4",
+          state: "output-error",
+          title: "Read missing file",
+          input: { path: "does-not-exist.ts" },
+          errorText: "ENOENT: no such file or directory",
+        },
+        {
+          type: "tool",
+          toolName: "delete_file",
+          toolCallId: "storybook-tool-5",
+          state: "output-denied",
+          title: "Delete file",
+          input: { path: "packages/chat/package.json" },
+        },
+      ]}
+    />
+  ),
+};
+
+export const SourcesAndFiles: StoryObj = {
+  name: "Sources and files",
+  render: () => (
+    <MessageContent
+      parts={[
+        {
+          type: "text",
+          text: "Here are the citations and a generated preview.",
+        },
+        {
+          type: "source-url",
+          sourceId: "src_docs",
+          url: "https://example.com/docs",
+          title: "Chat package docs",
+        },
+        {
+          type: "source-document",
+          sourceId: "src_spec",
+          mediaType: "application/pdf",
+          title: "Design spec",
+          filename: "design-spec.pdf",
+        },
+        {
+          type: "file",
+          mediaType: "text/plain",
+          url: "https://example.com/notes.txt",
+          filename: "notes.txt",
         },
       ]}
     />

@@ -1,5 +1,6 @@
 export { Chat } from "./components/Chat";
-export { ChatComposer } from "./components/Chat/chat";
+export { ChatComposer } from "./components/Chat/chat.composer";
+export { ChatShell, type ChatShellProps } from "./components/Chat/chat.shell";
 export {
   ChatContextProvider,
   ProviderId,

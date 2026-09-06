@@ -37,6 +37,8 @@
   --chat-primary-fg: #ffffff;
   --chat-danger: #b42318;
   --chat-accent: #10a37f;
+  --chat-warning: #d97706;
+  --chat-success: #059669;
 
   /* Type + space */
   --chat-font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -91,6 +93,8 @@
   --chat-primary-fg: #212121;
   --chat-danger: #f97066;
   --chat-accent: #1a7f64;
+  --chat-warning: #fbbf24;
+  --chat-success: #34d399;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -121,5 +125,7 @@
     --chat-primary-fg: #212121;
     --chat-danger: #f97066;
     --chat-accent: #1a7f64;
+    --chat-warning: #fbbf24;
+    --chat-success: #34d399;
   }
 }

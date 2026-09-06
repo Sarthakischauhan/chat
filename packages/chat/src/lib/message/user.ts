@@ -35,6 +35,18 @@ export const parseUserReferenceMessage = (content: string): UserReferenceMessage
     : null;
 };
 
+export const formatUserReferenceMessage = (message: string, references: string[]) => {
+  if (!references.length) {
+    return message;
+  }
+
+  const referenceText = references
+    .map((text, index) => `<reference ${index + 1}>\n${text}\n</reference ${index + 1}>`)
+    .join("\n\n");
+
+  return `${REFERENCE_PREFIX}${referenceText}${USER_MESSAGE_MARKER}${message}`;
+};
+
 export const getUserDisplayText = (message: ChatMessage) => {
   const text = getMessageTextContent(message);
   return parseUserReferenceMessage(text)?.message ?? text;

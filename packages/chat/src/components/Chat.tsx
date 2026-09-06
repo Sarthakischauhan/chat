@@ -1,22 +1,12 @@
 "use client";
 
-import { PenSquare } from "lucide-react";
 import type { CSSProperties } from "react";
-import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import type { ChatAdapter } from "../types";
-import { ThemeProvider, useTheme, type ChatTheme } from "../theme/theme.context";
-import { ThemeToggle } from "../theme/theme.toggle";
-import { ChatComposer } from "./Chat/chat";
-import { ChatContextProvider, useMessages } from "./Chat/chat.context";
+import { ThemeProvider, type ChatTheme } from "../theme/theme.context";
+import { ChatContextProvider } from "./Chat/chat.context";
+import { ChatShell } from "./Chat/chat.shell";
 import { ProviderId } from "./Chat/context";
-import { useThread } from "./Chat/context";
-import { Message } from "./Message/message";
-import {
-  createWidgetRegistry,
-  WidgetProvider,
-  type ChatWidgetInput,
-  type WidgetResponse,
-} from "./Widget/widget.context";
+import type { ChatWidgetInput } from "./Widget/widget.context";
 
 type ChatProps = {
   adapter: ChatAdapter;
@@ -34,109 +24,6 @@ type ChatProps = {
   showThemeToggle?: boolean;
   showModelSelector?: boolean;
 };
-
-function ChatShell({
-  className,
-  style,
-  widgets,
-  showThemeToggle = true,
-  showModelSelector = true,
-}: {
-  className?: string;
-  style?: CSSProperties;
-  widgets?: ChatWidgetInput;
-  showThemeToggle?: boolean;
-  showModelSelector?: boolean;
-}) {
-  const { sendMessage, isSending, messages, status } = useMessages();
-  const { createThread } = useThread();
-  const { resolvedTheme } = useTheme();
-  const registry = useMemo(() => createWidgetRegistry(widgets), [widgets]);
-  const messagesRef = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    const container = messagesRef.current;
-    if (!container) {
-      return;
-    }
-
-    container.scrollTop = container.scrollHeight;
-  }, [messages, status]);
-
-  useLayoutEffect(() => {
-    const container = messagesRef.current;
-    if (!container || (status !== "submitted" && status !== "streaming")) {
-      return;
-    }
-
-    const scrollToEnd = () => {
-      container.scrollTop = container.scrollHeight;
-    };
-
-    const observer = new ResizeObserver(scrollToEnd);
-    observer.observe(container);
-    const inner = container.firstElementChild;
-    if (inner) {
-      observer.observe(inner);
-    }
-
-    scrollToEnd();
-
-    return () => observer.disconnect();
-  }, [status]);
-
-  const respondToWidget = useCallback(
-    async (response: WidgetResponse) => {
-      const text =
-        response.actionId ??
-        response.label ??
-        (typeof response.value === "string" ? response.value : JSON.stringify(response.value));
-
-      if (!text.trim()) {
-        return;
-      }
-
-      await sendMessage({ text });
-    },
-    [sendMessage],
-  );
-
-  return (
-    <WidgetProvider
-      widgets={registry}
-      respondToWidget={respondToWidget}
-      disabled={isSending}
-    >
-      <div
-        className={["chat-root", className].filter(Boolean).join(" ")}
-        style={style}
-        data-theme={resolvedTheme}
-      >
-        <div className="chat-toolbar">
-          <button
-            type="button"
-            className="chat-theme-toggle"
-            onClick={() => void createThread()}
-            aria-label="Start a new chat"
-            title="New chat"
-            disabled={isSending}
-          >
-            <PenSquare size={16} strokeWidth={1.75} />
-          </button>
-          {showThemeToggle && (
-            <ThemeToggle />
-          )}
-        </div>
-        <div className="chat-messages" ref={messagesRef}>
-          <Message />
-        </div>
-        <div className="chat-composer">
-          <ChatComposer showModelSelector={showModelSelector} />
-        </div>
-      </div>
-    </WidgetProvider>
-  );
-}
 
 export function Chat({
   adapter,

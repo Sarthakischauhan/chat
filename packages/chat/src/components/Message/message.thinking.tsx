@@ -2,8 +2,8 @@
 
 import { ChevronDown, Sparkles } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
+import { formatElapsedWords, useElapsedTime } from "../../lib/message/elapsed";
 import { cn } from "../../lib/utils";
-import { formatElapsedWords, useElapsedTime } from "./message.loading";
 
 type ThinkingBlockProps = {
   isComplete: boolean;

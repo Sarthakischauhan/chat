@@ -13,7 +13,7 @@
     font-weight: 500;
     line-height: 1.25;
     list-style: none;
-    transition: color 160ms ease;
+    transition: color var(--chat-transition);
   }
 
   .md-thinking-complete > summary {
@@ -48,7 +48,7 @@
     width: 0.85rem;
     height: 0.85rem;
     opacity: 0.65;
-    transition: transform 160ms ease;
+    transition: transform var(--chat-transition);
   }
 
   .md-thinking-complete[open] .md-thinking-chevron {
@@ -110,55 +110,8 @@
     box-shadow: none !important;
   }
 
-  .md-content pre code.hljs {
-    color: #d4d4d4;
+  .chat-message-content .md-thinking-label {
+    font-size: 1rem;
+    font-weight: 500;
   }
-
-  .md-content .hljs-keyword,
-  .md-content .hljs-selector-tag,
-  .md-content .hljs-literal,
-  .md-content .hljs-section,
-  .md-content .hljs-link {
-    color: #c586c0;
-  }
-
-  .md-content .hljs-title,
-  .md-content .hljs-name,
-  .md-content .hljs-type,
-  .md-content .hljs-attribute,
-  .md-content .hljs-number,
-  .md-content .hljs-quote,
-  .md-content .hljs-template-tag {
-    color: #569cd6;
-  }
-
-  .md-content .hljs-string,
-  .md-content .hljs-regexp,
-  .md-content .hljs-symbol,
-  .md-content .hljs-bullet {
-    color: #ce9178;
-  }
-
-  .md-content .hljs-comment,
-  .md-content .hljs-meta,
-  .md-content .hljs-deletion {
-    color: #6a9955;
-  }
-
-  .md-content .hljs-built_in,
-  .md-content .hljs-class,
-  .md-content .hljs-function,
-  .md-content .hljs-variable {
-    color: #dcdcaa;
-  }
-}
-
-.chat-message-content .md-thinking > summary,
-.chat-message-content .md-thinking > summary .md-thinking-label {
-  font-family: var(--chat-font-sans);
-}
-
-.chat-message-content .md-thinking-label {
-  font-size: 1rem;
-  font-weight: 500;
 }

@@ -9,7 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { ChatTooltip } from "../chat.tooltip";
+import { formatUserReferenceMessage } from "../../../lib/message/user";
 import { createMessageId, normalizeReferenceText } from "./message.helpers";
 import { useMessages } from "./messages.context";
 import { useModel } from "./model.context";
@@ -95,16 +95,10 @@ export function ComposerProvider({ children }: ComposerProviderProps) {
 
     const nextTitle = text.slice(0, 60);
     const referencesSnapshot = referencesRef.current;
-    const referenceText = referencesSnapshot
-      .map(
-        (reference, index) =>
-          `<reference ${index + 1}>\n${reference.text}\n</reference ${index + 1}>`,
-      )
-      .join("\n\n");
-
-    const messageText = referenceText
-      ? `Use the following selected references as context:\n\n${referenceText}\n\nUser message:\n${text}`
-      : text;
+    const messageText = formatUserReferenceMessage(
+      text,
+      referencesSnapshot.map((reference) => reference.text),
+    );
 
     setInputState("");
     setReferences([]);
@@ -162,12 +156,7 @@ export function ComposerProvider({ children }: ComposerProviderProps) {
     ],
   );
 
-  return (
-    <ComposerContext.Provider value={value}>
-      {children}
-      <ChatTooltip onAddReference={addReference} />
-    </ComposerContext.Provider>
-  );
+  return <ComposerContext.Provider value={value}>{children}</ComposerContext.Provider>;
 }
 
 export function useComposer() {

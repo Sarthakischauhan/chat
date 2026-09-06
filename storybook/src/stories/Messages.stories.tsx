@@ -55,6 +55,11 @@ export const AssistantReply: StoryObj<MessageStoryArgs> = {
         type: "text",
         text: "The chat package turns agent output into themeable message parts.",
       },
+      {
+        type: "data",
+        name: "agent.progress",
+        data: { step: 2, total: 4, label: "Drafting reply" },
+      },
     ],
   },
   render: ({ parts, isUser }) => <MessageContent parts={parts} isUser={isUser} />,

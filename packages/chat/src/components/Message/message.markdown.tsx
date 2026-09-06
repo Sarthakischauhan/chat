@@ -1,11 +1,14 @@
+"use client";
+
 import { Children, isValidElement, type ComponentPropsWithoutRef } from "react";
-import { CodeMarkdown, type CodeTheme, type SupportedLanguage } from "@sarchauhan/code-markdown";
+import { CodeMarkdown, type SupportedLanguage } from "@sarchauhan/code-markdown";
 import ReactMarkdown from "react-markdown";
 import type { PluggableList } from "unified";
 import remarkGfm from "remark-gfm";
 
 import { cn } from "../../lib/utils";
 import { useTheme } from "../../theme/theme.context";
+import { chatCodeThemes } from "./message.markdown.theme";
 
 const markdownPlugins: { remark: PluggableList; rehype: PluggableList } = {
   remark: [remarkGfm],
@@ -29,55 +32,6 @@ const getTextContent = (value: unknown): string => {
   return "";
 };
 
-const chatCodeThemes: Record<"light" | "dark", CodeTheme> = {
-  light: {
-    name: "chat-light",
-    shikiTheme: "github-light",
-    colors: {
-      background: "#ffffff",
-      foreground: "#0d0d0d",
-      comment: "#6e6e80",
-      keyword: "#9b174c",
-      string: "#166534",
-      function: "#1d4ed8",
-      variable: "#0d0d0d",
-      number: "#7c3aed",
-      operator: "#9b174c",
-      punctuation: "#6e6e80",
-      type: "#0369a1",
-      tag: "#166534",
-      attribute: "#1d4ed8",
-      constant: "#b45309",
-      surface: "#f7f7f8",
-      overlay: "#d8d8df",
-      subtext: "#6e6e80",
-    },
-  },
-  dark: {
-    name: "chat-dark",
-    shikiTheme: "github-dark",
-    colors: {
-      background: "#212121",
-      foreground: "#ececec",
-      comment: "#8f8f8f",
-      keyword: "#ff7b72",
-      string: "#a5d6a7",
-      function: "#79c0ff",
-      variable: "#ececec",
-      number: "#d2a8ff",
-      operator: "#ff7b72",
-      punctuation: "#b4b4b4",
-      type: "#79c0ff",
-      tag: "#7ee787",
-      attribute: "#79c0ff",
-      constant: "#ffa657",
-      surface: "#2f2f2f",
-      overlay: "#454545",
-      subtext: "#b4b4b4",
-    },
-  },
-};
-
 const MarkdownCodeBlock = ({
   code,
   language,
@@ -98,6 +52,25 @@ const MarkdownCodeBlock = ({
     >
       {code}
     </CodeMarkdown>
+  );
+};
+
+const MarkdownPre = ({ className, children }: ComponentPropsWithoutRef<"pre">) => {
+  const child = Children.toArray(children)[0];
+  const code = isValidElement<{ className?: string; children?: unknown }>(child)
+    ? getTextContent(child.props.children)
+    : getTextContent(children);
+  const codeClassName = isValidElement<{ className?: string }>(child)
+    ? child.props.className
+    : undefined;
+
+  return (
+    <div className={cn("my-5", className)}>
+      <MarkdownCodeBlock
+        language={getCodeLanguage(codeClassName)}
+        code={code.replace(/\n$/, "")}
+      />
+    </div>
   );
 };
 
@@ -139,10 +112,7 @@ const markdownComponents = {
   ),
   blockquote: ({ className, ...props }: ComponentPropsWithoutRef<"blockquote">) => (
     <blockquote
-      className={cn(
-        "my-5 pl-4 italic text-muted-foreground/75",
-        className,
-      )}
+      className={cn("my-5 pl-4 italic text-muted-foreground/75", className)}
       {...props}
     />
   ),
@@ -150,13 +120,7 @@ const markdownComponents = {
     <hr className={cn("my-6 h-px border-0 bg-current opacity-10", className)} {...props} />
   ),
   table: ({ className, ...props }: ComponentPropsWithoutRef<"table">) => (
-    <table
-      className={cn(
-        "my-5 w-full border-collapse text-left text-sm",
-        className,
-      )}
-      {...props}
-    />
+    <table className={cn("my-5 w-full border-collapse text-left text-sm", className)} {...props} />
   ),
   thead: ({ className, ...props }: ComponentPropsWithoutRef<"thead">) => (
     <thead className={cn("text-xs uppercase tracking-wide text-muted-foreground/70", className)} {...props} />
@@ -171,28 +135,9 @@ const markdownComponents = {
     <th className={cn("px-0 py-2 pr-5 font-medium", className)} {...props} />
   ),
   td: ({ className, ...props }: ComponentPropsWithoutRef<"td">) => (
-    <td className={cn("px-0 py-2 pr-5 align-top opacity-80", className)} {...props } />
+    <td className={cn("px-0 py-2 pr-5 align-top opacity-80", className)} {...props} />
   ),
-  pre: ({ className, children }: ComponentPropsWithoutRef<"pre">) => (
-    (() => {
-      const child = Children.toArray(children)[0];
-      const code = isValidElement<{ className?: string; children?: unknown }>(child)
-        ? getTextContent(child.props.children)
-        : getTextContent(children);
-      const codeClassName = isValidElement<{ className?: string }>(child)
-        ? child.props.className
-        : undefined;
-
-      return (
-        <div className={cn("my-5", className)}>
-          <MarkdownCodeBlock
-            language={getCodeLanguage(codeClassName)}
-            code={code.replace(/\n$/, "")}
-          />
-        </div>
-      );
-    })()
-  ),
+  pre: MarkdownPre,
   // React Markdown v10 no longer consistently provides the legacy `inline`
   // prop. Fenced code is handled by the custom `pre` renderer above, so a
   // standalone `code` element should always be rendered as inline code.
@@ -208,18 +153,14 @@ type MarkdownContentProps = {
   className?: string;
 };
 
-export const MarkdownContent = ({ children, className }: MarkdownContentProps) => {
-  return (
-    // React Markdown doesn't accept class name anymore
-    <div className={cn("md-content break-words text-inherit", className)}>
-      <ReactMarkdown
-        remarkPlugins={markdownPlugins.remark}
-        rehypePlugins={markdownPlugins.rehype}
-        components={markdownComponents}
-        
-      >
-        {children}
-      </ReactMarkdown>
-    </div>
-  );
-};
+export const MarkdownContent = ({ children, className }: MarkdownContentProps) => (
+  <div className={cn("md-content break-words text-inherit", className)}>
+    <ReactMarkdown
+      remarkPlugins={markdownPlugins.remark}
+      rehypePlugins={markdownPlugins.rehype}
+      components={markdownComponents}
+    >
+      {children}
+    </ReactMarkdown>
+  </div>
+);

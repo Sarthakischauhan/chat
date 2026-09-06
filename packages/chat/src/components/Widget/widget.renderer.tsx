@@ -2,14 +2,15 @@
 
 import type { AgentWidgetPart } from "@sarchauhan/protocol";
 import { useState } from "react";
+import { formatJson } from "../../lib/message/format-json";
 import { BaseWidget } from "./base.widget";
+import { useWidgets } from "./widget.context";
 import {
   getWidgetShellProps,
   isWidgetDefinition,
   resolveWidgetPart,
-  useWidgets,
   type WidgetControls,
-} from "./widget.context";
+} from "./widget.registry";
 
 export function WidgetRenderer({ part }: { part: AgentWidgetPart }) {
   const { widgets, respondToWidget, disabled } = useWidgets();
@@ -52,7 +53,7 @@ export function WidgetRenderer({ part }: { part: AgentWidgetPart }) {
           status="Raw props"
           className="chat-widget-missing"
         >
-          <pre className="agent-tool-code">{JSON.stringify(part.props, null, 2)}</pre>
+          <pre className="agent-tool-code">{formatJson(part.props)}</pre>
         </BaseWidget>
       </div>
     );

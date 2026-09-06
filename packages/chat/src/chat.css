@@ -525,7 +525,7 @@
   background: var(--chat-bg-elevated);
   color: var(--chat-fg);
   cursor: pointer;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--chat-font-mono);
   font-size: var(--chat-text-xs);
   font-weight: 550;
   line-height: 1;
