@@ -1,73 +1,49 @@
 import type { AgentToolPart } from "@sarchauhan/protocol";
-import { ChevronDown } from "lucide-react";
-import { formatJson } from "../../lib/message/format-json";
-import { isToolFailed, isToolPending, toolChromeClass, toolDetail, toolStateLabel } from "../../lib/message/tool-state";
+import {
+  FileText,
+  Image as ImageIcon,
+  Pencil,
+  Search,
+  Sparkles,
+  Terminal,
+  Trash2,
+  Wrench,
+} from "lucide-react";
+import {
+  toolChipDetail,
+  toolChipIconKind,
+  toolChipLabel,
+  toolChipMotionClass,
+  type ToolChipIconKind,
+} from "../../lib/message/tool-chip";
+import { isToolPending } from "../../lib/message/tool-state";
 
-const ToolCompleteIcon = () => (
-  <svg viewBox="0 0 12 12" width="10" height="10" fill="none" aria-hidden="true">
-    <path
-      d="M2.5 6.5 5 9l4.5-6"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
+const ICONS: Record<ToolChipIconKind, typeof Wrench> = {
+  think: Sparkles,
+  write: Pencil,
+  command: Terminal,
+  read: FileText,
+  search: Search,
+  image: ImageIcon,
+  delete: Trash2,
+  default: Wrench,
+};
 
-const ToolFailedIcon = () => (
-  <svg viewBox="0 0 12 12" width="10" height="10" fill="none" aria-hidden="true">
-    <path
-      d="M3 3l6 6M9 3l-6 6"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-    />
-  </svg>
-);
-
-export const ToolBlock = ({ part }: { part: AgentToolPart }) => {
+export const ToolChipRow = ({ part }: { part: AgentToolPart }) => {
+  const Icon = ICONS[toolChipIconKind(part)];
+  const detail = toolChipDetail(part);
   const pending = isToolPending(part.state);
-  const failed = isToolFailed(part.state);
-  const detail = toolDetail(part);
 
   return (
-    <details className={`agent-tool ${toolChromeClass(part.state)}`} open={pending}>
-      <summary>
-        <ChevronDown className="agent-tool-chevron" aria-hidden="true" />
-        <span className="agent-tool-dot" aria-hidden="true">
-          {pending ? (
-            <span className="agent-tool-spinner" />
-          ) : failed ? (
-            <ToolFailedIcon />
-          ) : (
-            <ToolCompleteIcon />
-          )}
-        </span>
-        <span className="agent-tool-name">{part.title ?? part.toolName}</span>
-        {detail ? <span className="agent-tool-chip">{detail}</span> : null}
-        <span className="agent-tool-state">{toolStateLabel(part.state)}</span>
-      </summary>
-      <div className="agent-tool-body">
-        {part.input !== undefined && (
-          <div className="agent-tool-section">
-            <div className="agent-tool-section-label">Input</div>
-            <pre className="agent-tool-code">{formatJson(part.input)}</pre>
-          </div>
-        )}
-        {part.output !== undefined && (
-          <div className="agent-tool-section">
-            <div className="agent-tool-section-label">Output</div>
-            <pre className="agent-tool-code">{formatJson(part.output)}</pre>
-          </div>
-        )}
-        {part.errorText && (
-          <div className="agent-tool-section">
-            <div className="agent-tool-section-label">Error</div>
-            <pre className="agent-tool-code agent-tool-error">{part.errorText}</pre>
-          </div>
-        )}
-      </div>
-    </details>
+    <div className={`chat-tool-row ${toolChipMotionClass(part)}`}>
+      <span className="chat-tool-icon" aria-hidden="true">
+        {pending ? <span className="chat-tool-spinner" /> : <Icon size={14} strokeWidth={1.75} />}
+      </span>
+      <span className="chat-tool-label">{toolChipLabel(part)}</span>
+      {detail ? <span className="chat-tool-pill">{detail}</span> : null}
+    </div>
   );
 };
+
+/** @deprecated Use ToolChipRow. Kept as a compatible name for existing imports. */
+export const ToolBlock = ToolChipRow;
