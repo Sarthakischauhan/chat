@@ -21,13 +21,23 @@ export { Message } from "./components/Message/message";
 export { MessageFeedback } from "./components/Message/message.feedback";
 export { MessageUsage } from "./components/Message/message.usage";
 export { LoadingState, formatElapsed, formatElapsedWords } from "./components/Message/message.loading";
-export { ThinkingBlock } from "./components/Message/message.thinking";
+export { ThinkingBlock, type ThinkingBlockProps } from "./components/Message/message.thinking";
 export { MessageContent } from "./components/Message/message.content";
+export { ToolChip, BaseTool, type ToolChipProps } from "./components/Message/tool.chip";
+export type { ToolChipState } from "./lib/message/tool-chip";
 export { ToolChipGroup } from "./components/Message/message.tool.group";
 export { DiffChips } from "./components/Message/message.part.diff";
 export { TaskRows } from "./components/Message/message.part.task";
 export type { DiffChip } from "./lib/message/diff-summary";
 export type { TaskRow, TaskRowStatus } from "./lib/message/task-row";
+export {
+  Question,
+  questionWidget,
+  normalizeQuestionOptions,
+  type QuestionProps,
+  type QuestionOption,
+  type QuestionWidgetProps,
+} from "./components/Widget/question";
 export { ThemeProvider, useTheme, type ChatTheme } from "./theme/theme.context";
 export { ThemeToggle } from "./theme/theme.toggle";
 export { BaseWidget, type BaseWidgetProps } from "./components/Widget/base.widget";

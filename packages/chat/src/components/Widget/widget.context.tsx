@@ -2,8 +2,8 @@
 
 import type { ReactNode } from "react";
 import { createContext, useContext, useMemo } from "react";
+import { mergeWidgetRegistry } from "./builtin.widgets";
 import {
-  createWidgetRegistry,
   type ChatWidgetInput,
   type ChatWidgetRegistry,
   type WidgetResponse,
@@ -49,7 +49,7 @@ export function WidgetProvider({
   disabled = false,
   children,
 }: WidgetProviderProps) {
-  const registry = useMemo(() => createWidgetRegistry(widgets), [widgets]);
+  const registry = useMemo(() => mergeWidgetRegistry(widgets), [widgets]);
   const value = useMemo(
     () => ({
       widgets: registry,
@@ -67,7 +67,7 @@ export function useWidgets() {
 
   if (!context) {
     return {
-      widgets: {} as ChatWidgetRegistry,
+      widgets: mergeWidgetRegistry(),
       respondToWidget: async () => undefined,
       disabled: false,
     };

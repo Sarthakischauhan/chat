@@ -1,4 +1,4 @@
-import { LoadingState, MessageContent, ThinkingBlock } from "@sarchauhan/chat";
+import { LoadingState, MessageContent, Question, ThinkingBlock } from "@sarchauhan/chat";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
@@ -38,7 +38,7 @@ export const ThinkingPending: StoryObj = {
 };
 
 export const ToolChips: StoryObj = {
-  name: "Tool chips",
+  name: "Tool chips — live group",
   render: () => (
     <MessageContent
       parts={[
@@ -90,6 +90,67 @@ export const ToolChips: StoryObj = {
               { file: "menu.ts", additions: 8, deletions: 2 },
               { file: "index.ts", additions: 4 },
               { file: "tokens.css", additions: 6, deletions: 1 },
+            ],
+          },
+        },
+      ]}
+    />
+  ),
+};
+
+export const ToolChipsComplete: StoryObj = {
+  name: "Tool chips — completed group",
+  render: () => (
+    <MessageContent
+      parts={[
+        {
+          type: "tool",
+          toolName: "think",
+          toolCallId: "storybook-tool-think-done",
+          state: "output-available",
+          title: "Thinking",
+          input: { query: "Planning the chip layout…" },
+        },
+        {
+          type: "tool",
+          toolName: "write_file",
+          toolCallId: "storybook-tool-write-done",
+          state: "output-available",
+          title: "Write file",
+          input: { path: "packages/chat/src/components/Message/message.part.tool.tsx" },
+          output: {
+            path: "packages/chat/src/components/Message/message.part.tool.tsx",
+            lines: 204,
+            additions: 74,
+            deletions: 41,
+          },
+        },
+        {
+          type: "tool",
+          toolName: "run_command",
+          toolCallId: "storybook-tool-run-done",
+          state: "output-available",
+          title: "Rebuild and verify",
+          input: { command: "npm run build:chat" },
+          output: { command: "npm run build:chat" },
+        },
+        {
+          type: "tool",
+          toolName: "read_image",
+          toolCallId: "storybook-tool-image-done",
+          state: "output-available",
+          title: "Read image",
+          input: { filename: "flavor-chart.png" },
+        },
+        {
+          type: "data",
+          name: "diffs",
+          data: {
+            files: [
+              { file: "flavors.css", additions: 13 },
+              { file: "ChurnSchedule.tsx", additions: 74, deletions: 41 },
+              { file: "menu.ts", additions: 8, deletions: 2 },
+              { file: "index.ts", additions: 4 },
             ],
           },
         },
@@ -182,6 +243,16 @@ export const TaskRows: StoryObj = {
           },
         },
       ]}
+    />
+  ),
+};
+
+export const QuestionAsk: StoryObj = {
+  name: "Question",
+  render: () => (
+    <Question
+      prompt="Which language for the new service?"
+      options={["TypeScript", "Go", "Rust"]}
     />
   ),
 };

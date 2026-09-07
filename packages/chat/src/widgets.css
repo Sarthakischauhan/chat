@@ -3,13 +3,29 @@
   color: inherit;
 }
 
+.chat-question {
+  display: flex;
+  width: min(100%, 28rem);
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.1rem 0;
+}
+
+.chat-question-prompt {
+  color: var(--chat-fg);
+  font-size: var(--chat-text);
+  font-weight: 550;
+  letter-spacing: -0.015em;
+  line-height: var(--chat-leading-tight);
+}
+
 .chat-widget-card {
   display: flex;
   width: min(100%, 46rem);
   flex-direction: column;
   gap: 0.8rem;
   color: inherit;
-  padding: 0.35rem 0;
+  padding: 0.15rem 0;
 }
 
 .chat-widget-missing {

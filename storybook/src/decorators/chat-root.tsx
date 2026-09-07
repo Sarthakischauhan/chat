@@ -4,6 +4,7 @@ import {
   ChatComposer,
   ChatContextProvider,
   ThemeProvider,
+  WidgetProvider,
   useTheme,
   type ChatAdapter,
   type ChatTheme,
@@ -50,9 +51,11 @@ export const withChatRoot: Decorator = (Story, context) => {
       <ThemeProvider theme={theme}>
         {hasChatSurface ? (
           <ChatContextProvider adapter={storyAdapter} registryUrl={noRegistryUrl}>
-            <ChatStorySurface showComposer={context.parameters.hideComposer !== true}>
-              <Story />
-            </ChatStorySurface>
+            <WidgetProvider respondToWidget={async () => undefined}>
+              <ChatStorySurface showComposer={context.parameters.hideComposer !== true}>
+                <Story />
+              </ChatStorySurface>
+            </WidgetProvider>
           </ChatContextProvider>
         ) : (
           <Story />

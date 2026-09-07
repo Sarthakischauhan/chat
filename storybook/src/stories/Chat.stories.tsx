@@ -82,10 +82,10 @@ const widgetScript = (userText: string): StreamStep[] => {
         { type: "text", state: "done", text: "Got it. Quick question before I finalize —" },
         {
           type: "widget",
-          name: "poll",
-          id: "widget_poll_1",
+          name: "question",
+          id: "widget_question_1",
           props: {
-            question: "Which language for the new service?",
+            prompt: "Which language for the new service?",
             options: ["TypeScript", "Go", "Rust"],
           },
           interactive: true,

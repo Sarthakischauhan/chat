@@ -1,6 +1,8 @@
 import type { AgentToolPart } from "@sarchauhan/protocol";
 import { isToolFailed, isToolPending, toolDetail } from "./tool-state";
 
+export type ToolChipState = "pending" | "running" | "complete" | "failed";
+
 export type ToolChipIconKind =
   | "think"
   | "write"
@@ -102,3 +104,22 @@ export const toolChipMotionClass = (part: AgentToolPart) => {
 
   return "is-complete";
 };
+
+export const toolChipState = (part: AgentToolPart): ToolChipState => {
+  if (isToolFailed(part.state)) {
+    return "failed";
+  }
+
+  if (part.state === "approval-requested") {
+    return "pending";
+  }
+
+  if (isToolPending(part.state)) {
+    return "running";
+  }
+
+  return "complete";
+};
+
+export const shouldExpandToolGroup = (tools: AgentToolPart[]) =>
+  tools.some((tool) => isToolPending(tool.state));

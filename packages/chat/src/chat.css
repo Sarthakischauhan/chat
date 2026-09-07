@@ -6,7 +6,7 @@
   min-height: 0;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid var(--chat-border);
+  border: 0;
   border-radius: var(--chat-radius-lg);
   background: var(--chat-bg);
   color: var(--chat-fg);

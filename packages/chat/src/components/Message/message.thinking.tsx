@@ -5,7 +5,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { formatElapsedWords, useElapsedTime } from "../../lib/message/elapsed";
 import { cn } from "../../lib/utils";
 
-type ThinkingBlockProps = {
+export type ThinkingBlockProps = {
   isComplete: boolean;
   elapsedMs?: number;
   children?: ReactNode;

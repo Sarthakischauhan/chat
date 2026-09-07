@@ -4,7 +4,7 @@ import type { AgentToolPart } from "@sarchauhan/protocol";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { DiffChip } from "../../lib/message/diff-summary";
-import { isToolPending } from "../../lib/message/tool-state";
+import { shouldExpandToolGroup } from "../../lib/message/tool-chip";
 import { DiffChips } from "./message.part.diff";
 import { ToolChipRow } from "./message.part.tool";
 
@@ -18,21 +18,30 @@ export const ToolChipGroup = ({
   tools: AgentToolPart[];
   diffs?: DiffChip[];
 }) => {
-  const anyPending = tools.some((tool) => isToolPending(tool.state));
-  const [open, setOpen] = useState(true);
+  const live = shouldExpandToolGroup(tools);
+  const [open, setOpen] = useState(live);
 
   useEffect(() => {
-    if (anyPending) {
-      setOpen(true);
-    }
-  }, [anyPending]);
+    setOpen(live);
+  }, [live]);
 
   if (!tools.length) {
     return null;
   }
 
+  if (tools.length === 1) {
+    return (
+      <div className={`chat-tool-group${live ? " is-pending" : ""}`}>
+        <div className="chat-tool-list">
+          <ToolChipRow part={tools[0]} />
+        </div>
+        <DiffChips diffs={diffs} />
+      </div>
+    );
+  }
+
   return (
-    <div className={`chat-tool-group${anyPending ? " is-pending" : ""}`}>
+    <div className={`chat-tool-group${live ? " is-pending" : ""}`}>
       <details
         className="chat-tool-group-details"
         open={open}

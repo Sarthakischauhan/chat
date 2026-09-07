@@ -143,9 +143,9 @@
   align-items: center;
   gap: 0.4rem;
   max-width: 100%;
-  border: 1px solid var(--chat-border);
+  border: 0;
   border-radius: var(--chat-radius-pill);
-  background: var(--chat-bg-elevated);
+  background: var(--chat-control-bg);
   color: var(--chat-fg);
   font-size: var(--chat-text-xs);
   line-height: 1.2;
@@ -187,10 +187,10 @@
   display: flex;
   align-items: center;
   gap: var(--chat-space-3);
-  min-height: 2.5rem;
-  border: 1px solid var(--chat-border);
-  border-radius: var(--chat-radius-md);
-  padding: 0.55rem 0.75rem;
+  min-height: 2.25rem;
+  border: 0;
+  border-radius: 0;
+  padding: 0.35rem 0;
 }
 
 .chat-task-glyph {
@@ -242,7 +242,8 @@
 .chat-task-pill {
   margin-left: auto;
   border-radius: var(--chat-radius-pill);
-  background: color-mix(in oklab, var(--chat-success) 16%, transparent);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--chat-success) 50%, transparent);
   color: var(--chat-success);
   font-size: var(--chat-text-xs);
   font-weight: 550;
@@ -250,7 +251,8 @@
 }
 
 .chat-task-pill.is-failed {
-  background: color-mix(in oklab, var(--chat-danger) 14%, transparent);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--chat-danger) 50%, transparent);
   color: var(--chat-danger);
 }
 

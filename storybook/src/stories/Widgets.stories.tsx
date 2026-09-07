@@ -2,13 +2,14 @@ import { useState } from "react";
 import {
   BaseWidget,
   MessageContent,
+  Question,
   WidgetProvider,
 } from "@sarchauhan/chat";
 import type { Meta, StoryObj } from "@storybook/react";
 import { storybookWidgets } from "../mocks/widgets";
 
 type WidgetStoryArgs = {
-  kind: "poll" | "counter" | "missing";
+  kind: "question" | "counter" | "missing";
   interactive: boolean;
   label: string;
   title: string;
@@ -20,7 +21,7 @@ const meta: Meta<WidgetStoryArgs> = {
   title: "Widgets/Registry",
   tags: ["autodocs"],
   args: {
-    kind: "poll",
+    kind: "question",
     interactive: true,
     label: "Widget",
     title: "Base card",
@@ -30,7 +31,7 @@ const meta: Meta<WidgetStoryArgs> = {
   argTypes: {
     kind: {
       control: "select",
-      options: ["poll", "counter", "missing"],
+      options: ["question", "counter", "missing"],
       description: "Registered widget fixture to render in an assistant message.",
     },
     interactive: {
@@ -58,6 +59,16 @@ export const Base: StoryObj<WidgetStoryArgs> = {
   ),
 };
 
+export const QuestionCard: StoryObj<WidgetStoryArgs> = {
+  name: "Question",
+  render: () => (
+    <Question
+      prompt="Which language for the new service?"
+      options={["TypeScript", "Go", "Rust"]}
+    />
+  ),
+};
+
 const WidgetConversation = ({ kind, interactive }: Pick<WidgetStoryArgs, "kind" | "interactive">) => {
   const [lastResponse, setLastResponse] = useState<string>();
   const name = kind === "missing" ? "not_registered" : kind;
@@ -82,7 +93,7 @@ const WidgetConversation = ({ kind, interactive }: Pick<WidgetStoryArgs, "kind" 
               kind === "counter"
                 ? {}
                 : {
-                    question: "Which language for the new service?",
+                    prompt: "Which language for the new service?",
                     options: ["TypeScript", "Go", "Rust"],
                   },
             interactive,

@@ -1,5 +1,16 @@
 
 @layer components {
+  @keyframes chat-think-pulse {
+    0%,
+    100% {
+      opacity: 0.42;
+    }
+
+    50% {
+      opacity: 1;
+    }
+  }
+
   .md-thinking {
     margin: 0;
   }
@@ -9,7 +20,7 @@
     align-items: center;
     gap: 0.5rem;
     color: var(--chat-fg-muted);
-    font-size: 1rem;
+    font-size: var(--chat-text-sm);
     font-weight: 500;
     line-height: 1.25;
     list-style: none;
@@ -44,6 +55,10 @@
     stroke-width: 1.8;
   }
 
+  .md-thinking-pending .md-thinking-sparkle {
+    animation: chat-think-pulse 1.4s ease-in-out infinite;
+  }
+
   .md-thinking-chevron {
     width: 0.85rem;
     height: 0.85rem;
@@ -65,8 +80,7 @@
 
   .md-thinking-body {
     margin-top: var(--chat-space-2);
-    padding-left: var(--chat-space-4);
-    border-left: 1px solid var(--chat-border);
+    padding-left: calc(1rem + 0.5rem);
     color: var(--chat-fg-muted);
     font-size: var(--chat-text-sm);
     line-height: var(--chat-leading);
@@ -104,13 +118,20 @@
   }
 
   .chat-code-markdown {
-    border: 0.5px solid var(--chat-border) !important;
+    border: 0 !important;
     border-radius: var(--chat-radius-md) !important;
     box-shadow: none !important;
+    background: var(--chat-control-bg) !important;
   }
 
   .chat-message-content .md-thinking-label {
-    font-size: 1rem;
+    font-size: var(--chat-text-sm);
     font-weight: 500;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .md-thinking-pending .md-thinking-sparkle {
+      animation: none;
+    }
   }
 }
