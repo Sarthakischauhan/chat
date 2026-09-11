@@ -157,8 +157,7 @@
 .agent-tool-body,
 .agent-data > pre {
   margin-left: 1.25rem;
-  padding: 0.55rem 0 0 1rem;
-  border-left: 1px solid var(--chat-border);
+  padding: 0.55rem 0 0;
 }
 
 .agent-tool-section + .agent-tool-section {

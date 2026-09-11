@@ -14,7 +14,7 @@
 .chat-question-prompt {
   color: var(--chat-fg);
   font-size: var(--chat-text);
-  font-weight: 550;
+  font-weight: 500;
   letter-spacing: -0.015em;
   line-height: var(--chat-leading-tight);
 }
@@ -54,7 +54,7 @@
 .chat-widget-title {
   color: inherit;
   font-size: var(--chat-text);
-  font-weight: 550;
+  font-weight: 500;
   line-height: var(--chat-leading-tight);
 }
 

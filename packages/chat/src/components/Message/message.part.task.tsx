@@ -20,17 +20,13 @@ export const TaskRows = ({ tasks }: { tasks: TaskRow[] }) => {
         <div
           key={task.id}
           className={`chat-task-row is-${task.status}`}
+          aria-label={[task.title, task.meta, task.status].filter(Boolean).join(", ")}
         >
           <span className="chat-task-glyph" aria-hidden="true">
             {glyph(task, index)}
           </span>
           <span className="chat-task-title">{task.title}</span>
           {task.meta ? <span className="chat-task-meta">{task.meta}</span> : null}
-          {task.status === "completed" ? (
-            <span className="chat-task-pill">Completed</span>
-          ) : task.status === "failed" ? (
-            <span className="chat-task-pill is-failed">Failed</span>
-          ) : null}
         </div>
       ))}
     </div>

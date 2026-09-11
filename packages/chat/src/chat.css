@@ -139,7 +139,7 @@
   margin: 0 0 var(--chat-space-2);
   color: var(--chat-fg);
   font-size: 1.375rem;
-  font-weight: 560;
+  font-weight: 600;
   letter-spacing: -0.03em;
   line-height: var(--chat-leading-tight);
 }
@@ -396,7 +396,7 @@
   color: var(--chat-fg-muted);
   cursor: pointer;
   font-size: var(--chat-text-xs);
-  font-weight: 550;
+  font-weight: 500;
   line-height: 1;
   padding: 0.5rem 0.5rem;
   transition:
@@ -488,7 +488,7 @@
   cursor: pointer;
   font-family: var(--chat-font-mono);
   font-size: var(--chat-text-xs);
-  font-weight: 550;
+  font-weight: 500;
   line-height: 1;
   box-shadow: var(--chat-composer-shadow);
   pointer-events: auto;

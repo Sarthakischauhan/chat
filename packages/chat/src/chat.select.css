@@ -47,7 +47,7 @@
   gap: var(--chat-space-2, 0.5rem);
   color: var(--chat-fg-subtle, #8e8ea0);
   font-size: var(--chat-text-xs, 0.75rem);
-  font-weight: 550;
+  font-weight: 500;
   line-height: 1.25;
   padding: 0.45rem 0.5rem 0.25rem;
 }
@@ -98,7 +98,7 @@
 
 .chat-model-content .chat-model-item[data-state="checked"] {
   color: var(--chat-fg, #0d0d0d);
-  font-weight: 550;
+  font-weight: 500;
 }
 
 .chat-model-content .chat-model-item [data-slot="select-item-indicator"] {
