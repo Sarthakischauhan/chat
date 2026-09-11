@@ -1,9 +1,10 @@
 /**
  * Chat design tokens.
  *
- * ChatGPT-inspired reading column: calm neutrals, clear turn-taking,
- * content first. Hierarchy comes from type and spacing; color only
- * marks real state (streaming, approval, error). Chrome stays quiet.
+ * Vercel restraint, content-first reading column: calm neutrals, clear
+ * turn-taking. Hierarchy comes from type and spacing; color only marks
+ * real state (streaming, approval, error). Chrome stays quiet. See
+ * /design.md — do not invent a parallel visual system.
  */
 
 .chat-root,
