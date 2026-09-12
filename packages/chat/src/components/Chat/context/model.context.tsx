@@ -86,7 +86,7 @@ export function ModelProvider({
         const nextThinking: Record<string, string> = {};
         for (const p of data.providers) {
           for (const m of p.models) {
-            const levels = (m as any).thinkingLevels as string[] | undefined;
+            const levels = m.thinkingLevels;
             if (levels?.length) nextThinking[`${p.id}::${m.id}`] = levels.includes("medium") ? "medium" : levels[0];
           }
         }

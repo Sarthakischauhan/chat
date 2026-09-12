@@ -30,7 +30,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--chat-space-2);
-  padding: 0.15rem 0;
+  padding: var(--chat-space-05) 0;
   color: var(--chat-fg-muted);
   cursor: pointer;
   font-size: var(--chat-text-sm);
@@ -63,8 +63,8 @@
 .chat-tool-list {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  padding: 0.15rem 0 0.1rem;
+  gap: var(--chat-space-1);
+  padding: var(--chat-space-05) 0 var(--chat-space-05);
 }
 
 .chat-tool-row {
@@ -126,7 +126,7 @@
   font-family: var(--chat-font-mono);
   font-size: var(--chat-text-xs);
   line-height: var(--chat-leading-tight);
-  padding: 0.22rem 0.55rem;
+  padding: var(--chat-space-1) var(--chat-space-2);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -134,14 +134,14 @@
 .chat-diff-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  padding: 0.15rem 0 0.05rem;
+  gap: var(--chat-space-1_5);
+  padding: var(--chat-space-05) 0 var(--chat-space-05);
 }
 
 .chat-diff-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--chat-space-1_5);
   max-width: 100%;
   border: 0;
   border-radius: var(--chat-radius-pill);
@@ -149,7 +149,7 @@
   color: var(--chat-fg);
   font-size: var(--chat-text-xs);
   line-height: var(--chat-leading-tight);
-  padding: 0.28rem 0.6rem;
+  padding: var(--chat-space-1) var(--chat-space-2_5);
 }
 
 .chat-diff-file {
@@ -174,13 +174,13 @@
   align-items: center;
   color: var(--chat-fg-subtle);
   font-size: var(--chat-text-xs);
-  padding: 0.28rem 0.15rem;
+  padding: var(--chat-space-1) var(--chat-space-05);
 }
 
 .chat-task-list {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: var(--chat-space-2);
 }
 
 .chat-task-row {
@@ -190,7 +190,7 @@
   min-height: 2.25rem;
   border: 0;
   border-radius: 0;
-  padding: 0.35rem 0;
+  padding: var(--chat-space-1_5) 0;
 }
 
 .chat-task-glyph {

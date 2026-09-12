@@ -12,6 +12,8 @@ export enum ProviderId {
 export type RegistryModel = {
   id: string;
   label: string;
+  description?: string;
+  thinkingLevels?: string[];
 };
 
 export type RegistryProvider = {

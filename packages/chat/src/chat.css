@@ -114,7 +114,7 @@
 .chat-loading-timer {
   color: var(--chat-fg-subtle);
   font-family: var(--chat-font-mono);
-  font-size: 0.95em;
+  font-size: var(--chat-caption-size);
   font-variant-numeric: tabular-nums;
 }
 
@@ -131,7 +131,7 @@
 }
 
 .chat-response-status {
-  padding: 0.25rem 0;
+  padding: var(--chat-space-1) 0;
   color: var(--chat-fg-muted);
   font-size: var(--chat-caption-size);
   line-height: var(--chat-caption-leading);
@@ -199,7 +199,7 @@
   align-items: center;
   gap: var(--chat-space-2);
   border-radius: var(--chat-radius-pill);
-  padding: 0.25rem 0.35rem 0.25rem 1rem;
+  padding: var(--chat-space-1) var(--chat-space-1_5) var(--chat-space-1) var(--chat-space-4);
 }
 
 .chat-composer-shell[data-variant="small"] .chat-references {
@@ -218,7 +218,7 @@
   max-height: 8rem;
   overflow-y: hidden;
   overflow-x: hidden;
-  padding: 0.55rem 0.35rem;
+  padding: var(--chat-space-2) var(--chat-space-1_5);
   line-height: var(--chat-leading-snug);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -241,7 +241,7 @@
   min-width: 0;
   min-height: 2.5rem;
   max-width: 8rem;
-  padding: 0.3rem 0.5rem;
+  padding: var(--chat-space-1_5) var(--chat-space-2);
   font-size: var(--chat-text-sm);
 }
 
@@ -281,7 +281,7 @@
   line-height: var(--chat-leading-normal);
   letter-spacing: var(--chat-body-tracking);
   outline: none;
-  padding: 0.7rem 0.85rem;
+  padding: var(--chat-space-3) var(--chat-space-3_5);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   word-break: break-word;
@@ -350,7 +350,7 @@
   line-height: var(--chat-leading-tight);
   font-weight: var(--chat-weight-regular);
   letter-spacing: var(--chat-tracking-normal);
-  padding: 0.3rem 0.7rem 0.3rem 0.8rem;
+  padding: var(--chat-space-1_5) var(--chat-space-3) var(--chat-space-1_5) var(--chat-space-3_5);
   white-space: nowrap;
   transition:
     background-color var(--chat-transition),
@@ -398,11 +398,11 @@
   border-radius: var(--chat-radius-lg);
   background: var(--chat-user-bg);
   color: var(--chat-user-fg);
-  padding: 0.65rem 1rem;
+  padding: var(--chat-space-2_5) var(--chat-space-4);
 }
 
 .chat-message-user-inner.is-editing .chat-message-bubble {
-  padding: 0.55rem 0.65rem;
+  padding: var(--chat-space-2) var(--chat-space-2_5);
 }
 
 .chat-message-assistant {
@@ -416,14 +416,14 @@
   width: 100%;
   max-width: 100%;
   overflow: hidden;
-  padding-top: 0.15rem;
+  padding-top: var(--chat-space-05);
 }
 
 .chat-message-feedback {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.55rem;
+  gap: var(--chat-space-1_5);
+  margin-top: var(--chat-space-2);
 }
 
 .chat-message-usage {
@@ -483,7 +483,7 @@
   font-weight: var(--chat-weight-medium);
   letter-spacing: var(--chat-tracking-normal);
   line-height: var(--chat-leading-none);
-  padding: 0.5rem 0.5rem;
+  padding: var(--chat-space-2) var(--chat-space-2);
   transition:
     color var(--chat-transition),
     background-color var(--chat-transition);
@@ -553,7 +553,7 @@
   line-height: var(--chat-body-leading);
   letter-spacing: var(--chat-body-tracking);
   outline: none;
-  padding: 0.2rem 0.35rem;
+  padding: var(--chat-space-1) var(--chat-space-1_5);
 }
 
 .chat-edit-area:focus-visible {
@@ -567,7 +567,7 @@
   align-items: center;
   justify-content: center;
   height: 2rem;
-  padding: 0 0.65rem;
+  padding: 0 var(--chat-space-2_5);
   transform: translate(-50%, calc(-100% - 0.75rem));
   border: 1px solid var(--chat-border);
   border-radius: var(--chat-radius-sm);
@@ -595,20 +595,20 @@
 .chat-references {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  padding: 0.1rem 0.35rem 0.15rem;
+  gap: var(--chat-space-1_5);
+  padding: var(--chat-space-05) var(--chat-space-1_5) var(--chat-space-05);
 }
 
 .chat-reference {
   display: inline-flex;
   max-width: 100%;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--chat-space-1_5);
   border: 0;
   border-radius: var(--chat-radius-sm);
   background: var(--chat-control-bg);
   color: var(--chat-fg-muted);
-  padding: 0.25rem 0.25rem 0.25rem 0.55rem;
+  padding: var(--chat-space-1) var(--chat-space-1) var(--chat-space-1) var(--chat-space-2);
   font-size: var(--chat-fs-14);
   line-height: var(--chat-leading-snug);
   font-weight: var(--chat-weight-regular);
@@ -620,7 +620,7 @@
 }
 
 .chat-user-reference-item .chat-reference-label {
-  margin-bottom: 0.15rem;
+  margin-bottom: var(--chat-space-05);
   color: var(--chat-fg-subtle);
   font-size: var(--chat-label-size);
   font-weight: var(--chat-label-weight);
